@@ -1,0 +1,3 @@
+Magistr solution
+
+Base repository
