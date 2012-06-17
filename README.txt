@@ -1,3 +1,10 @@
-Magistr solution
+setghsdghsdghs
+gh
+dgh
+dgh
 
-Base repository
+dfh
+dgh
+dghd
+h
+gh
