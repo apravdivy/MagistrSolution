@@ -1,10 +1,3 @@
-setghsdghsdghs
-gh
-dgh
-dgh
+MagistrSolution
 
-dfh
-dgh
-dghd
-h
-gh
+It is base repository

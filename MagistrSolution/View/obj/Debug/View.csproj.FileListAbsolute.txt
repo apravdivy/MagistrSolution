@@ -1,0 +1,184 @@
+E:\MagistrSolution\View\obj\Debug\ResolveAssemblyReference.cache
+E:\MagistrSolution\View\obj\Debug\View.Forms.MainForm.resources
+E:\MagistrSolution\View\obj\Debug\View.csproj.GenerateResource.Cache
+E:\MagistrSolution\View\obj\Debug\View.pdb
+E:\MagistrSolution\View\bin\Debug\View.dll
+E:\MagistrSolution\View\bin\Debug\View.pdb
+E:\MagistrSolution\View\bin\Debug\Common.dll
+E:\MagistrSolution\View\bin\Debug\Core.dll
+E:\MagistrSolution\View\bin\Debug\ZedGraph.dll
+E:\MagistrSolution\View\bin\Debug\ZedGraph.pdb
+E:\MagistrSolution\View\bin\Debug\Core.pdb
+E:\MagistrSolution\View\bin\Debug\Common.pdb
+E:\MagistrSolution\View\bin\Debug\de\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\es\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\fr\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\hu\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\it\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\ja\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\pt\ZedGraph.resources.dll
+E:\MagistrSolution\View\bin\Debug\sv\ZedGraph.resources.dll
+E:\MagistrSolution\View\obj\Debug\View.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\View.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\View.pdb
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\Common.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\Core.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\ZedGraph.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\ZedGraph.pdb
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\Core.pdb
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\Common.pdb
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\de\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\es\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\fr\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\hu\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\it\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\ja\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\pt\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\bin\Debug\sv\ZedGraph.resources.dll
+e:\DNU\5 курс\MagistrSolution\View\obj\Debug\ResolveAssemblyReference.cache
+e:\DNU\5 курс\MagistrSolution\View\obj\Debug\View.Forms.MainForm.resources
+e:\DNU\5 курс\MagistrSolution\View\obj\Debug\View.csproj.GenerateResource.Cache
+e:\DNU\5 курс\MagistrSolution\View\obj\Debug\View.dll
+e:\DNU\5 курс\MagistrSolution\View\obj\Debug\View.pdb
+G:\Projects\MagistrSolution\View\bin\Debug\View.dll
+G:\Projects\MagistrSolution\View\bin\Debug\View.pdb
+G:\Projects\MagistrSolution\View\bin\Debug\Common.dll
+G:\Projects\MagistrSolution\View\bin\Debug\Core.dll
+G:\Projects\MagistrSolution\View\bin\Debug\ZedGraph.dll
+G:\Projects\MagistrSolution\View\bin\Debug\ZedGraph.pdb
+G:\Projects\MagistrSolution\View\bin\Debug\Core.pdb
+G:\Projects\MagistrSolution\View\bin\Debug\Common.pdb
+G:\Projects\MagistrSolution\View\bin\Debug\de\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\es\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\fr\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\hu\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\it\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\ja\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\pt\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\bin\Debug\sv\ZedGraph.resources.dll
+G:\Projects\MagistrSolution\View\obj\Debug\ResolveAssemblyReference.cache
+G:\Projects\MagistrSolution\View\obj\Debug\View.Forms.MainForm.resources
+G:\Projects\MagistrSolution\View\obj\Debug\View.csproj.GenerateResource.Cache
+G:\Projects\MagistrSolution\View\obj\Debug\View.dll
+G:\Projects\MagistrSolution\View\obj\Debug\View.pdb
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\View.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\View.pdb
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\Common.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\Core.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\ZedGraph.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\ZedGraph.pdb
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\Core.pdb
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\Common.pdb
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\de\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\es\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\fr\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\hu\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\it\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\ja\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\pt\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\bin\Debug\sv\ZedGraph.resources.dll
+G:\asdfasdfsdf\MagistrSolution\View\obj\Debug\ResolveAssemblyReference.cache
+G:\asdfasdfsdf\MagistrSolution\View\obj\Debug\View.Forms.MainForm.resources
+G:\asdfasdfsdf\MagistrSolution\View\obj\Debug\View.csproj.GenerateResource.Cache
+G:\asdfasdfsdf\MagistrSolution\View\obj\Debug\View.dll
+G:\asdfasdfsdf\MagistrSolution\View\obj\Debug\View.pdb
+G:\DNU\MagistrSolution\View\bin\Debug\View.dll
+G:\DNU\MagistrSolution\View\bin\Debug\View.pdb
+G:\DNU\MagistrSolution\View\bin\Debug\Common.dll
+G:\DNU\MagistrSolution\View\bin\Debug\Core.dll
+G:\DNU\MagistrSolution\View\bin\Debug\SX.dll
+G:\DNU\MagistrSolution\View\bin\Debug\ZedGraph.dll
+G:\DNU\MagistrSolution\View\bin\Debug\Core.pdb
+G:\DNU\MagistrSolution\View\bin\Debug\Common.pdb
+G:\DNU\MagistrSolution\View\bin\Debug\ZedGraph.pdb
+G:\DNU\MagistrSolution\View\bin\Debug\de\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\es\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\fr\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\hu\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\it\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\ja\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\pt\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\bin\Debug\sv\ZedGraph.resources.dll
+G:\DNU\MagistrSolution\View\obj\Debug\ResolveAssemblyReference.cache
+G:\DNU\MagistrSolution\View\obj\Debug\View.Forms.EnterNameForm.resources
+G:\DNU\MagistrSolution\View\obj\Debug\View.Forms.MainForm.resources
+G:\DNU\MagistrSolution\View\obj\Debug\View.Forms.ResultForm.resources
+G:\DNU\MagistrSolution\View\obj\Debug\View.csproj.GenerateResource.Cache
+G:\DNU\MagistrSolution\View\obj\Debug\View.dll.licenses
+G:\DNU\MagistrSolution\View\obj\Debug\View.dll
+G:\DNU\MagistrSolution\View\obj\Debug\View.pdb
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\ResolveAssemblyReference.cache
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.Forms.EnterNameForm.resources
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.Forms.MainForm.resources
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.Forms.ResultForm.resources
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.csproj.GenerateResource.Cache
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.dll.licenses
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\View.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\View.pdb
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\Common.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\Core.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\SX.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\ZedGraph.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\Core.pdb
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\Common.pdb
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\ZedGraph.pdb
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\de\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\es\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\fr\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\hu\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\it\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\ja\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\pt\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\bin\Debug\sv\ZedGraph.resources.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.dll
+E:\DNU\Aspirant\MagistrSolution_release\View\obj\Debug\View.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\View.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\View.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\Core.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\SX.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\ZedGraph.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\Core.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\ZedGraph.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\de\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\es\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\fr\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\hu\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\it\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\ja\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\pt\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\bin\Debug\sv\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\ResolveAssemblyReference.cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.Forms.EnterNameForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.Forms.MainForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.Forms.ResultForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.csproj.GenerateResource.Cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.dll.licenses
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\View\obj\Debug\View.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\View.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\View.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\Core.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\SX.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\ZedGraph.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\Core.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\ZedGraph.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\de\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\es\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\fr\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\hu\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\it\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\ja\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\pt\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\bin\Debug\sv\ZedGraph.resources.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.csprojResolveAssemblyReference.cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.Forms.EnterNameForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.Forms.MainForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.Forms.ResultForm.resources
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.csproj.GenerateResource.Cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.dll.licenses
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\View\obj\Debug\View.pdb

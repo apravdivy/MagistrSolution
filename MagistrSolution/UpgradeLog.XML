@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="MagistrSolution">
+</Property><Property Name="Solution File" Value="G:\Projects\MagistrSolution\MagistrSolution.sln">
+</Property><Property Name="Date" Value="20 березня 2011 р.">
+</Property><Property Name="Time" Value="17:53:37">
+</Property></Properties><Event ErrorLevel="0" Project="ZedGraph" Source="ZedGraph\ZedGraph.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="ZedGraph" Source="ZedGraph\ZedGraph.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ZedGraph" Source="ZedGraph\ZedGraph.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

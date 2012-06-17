@@ -1,0 +1,44 @@
+E:\MagistrSolution\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\MagistrSolution\Common\bin\Debug\Common.dll
+E:\MagistrSolution\Common\bin\Debug\Common.pdb
+E:\MagistrSolution\Common\obj\Debug\Common.dll
+E:\MagistrSolution\Common\obj\Debug\Common.pdb
+e:\DNU\5 курс\MagistrSolution\Common\bin\Debug\Common.dll
+e:\DNU\5 курс\MagistrSolution\Common\bin\Debug\Common.pdb
+e:\DNU\5 курс\MagistrSolution\Common\obj\Debug\ResolveAssemblyReference.cache
+e:\DNU\5 курс\MagistrSolution\Common\obj\Debug\Common.dll
+e:\DNU\5 курс\MagistrSolution\Common\obj\Debug\Common.pdb
+G:\Projects\MagistrSolution\Common\bin\Debug\Common.dll
+G:\Projects\MagistrSolution\Common\bin\Debug\Common.pdb
+G:\Projects\MagistrSolution\Common\obj\Debug\ResolveAssemblyReference.cache
+G:\Projects\MagistrSolution\Common\obj\Debug\Common.dll
+G:\Projects\MagistrSolution\Common\obj\Debug\Common.pdb
+G:\asdfasdfsdf\MagistrSolution\Common\bin\Debug\Common.dll
+G:\asdfasdfsdf\MagistrSolution\Common\bin\Debug\Common.pdb
+G:\asdfasdfsdf\MagistrSolution\Common\obj\Debug\ResolveAssemblyReference.cache
+G:\asdfasdfsdf\MagistrSolution\Common\obj\Debug\Common.dll
+G:\asdfasdfsdf\MagistrSolution\Common\obj\Debug\Common.pdb
+G:\DNU\MagistrSolution\Common\bin\Debug\Common.dll
+G:\DNU\MagistrSolution\Common\bin\Debug\Common.pdb
+G:\DNU\MagistrSolution\Common\bin\Debug\SX.dll
+G:\DNU\MagistrSolution\Common\obj\Debug\ResolveAssemblyReference.cache
+G:\DNU\MagistrSolution\Common\obj\Debug\Common.dll
+G:\DNU\MagistrSolution\Common\obj\Debug\Common.pdb
+E:\DNU\Aspirant\MagistrSolution_release\Common\bin\Debug\Common.dll
+E:\DNU\Aspirant\MagistrSolution_release\Common\bin\Debug\Common.pdb
+E:\DNU\Aspirant\MagistrSolution_release\Common\bin\Debug\SX.dll
+E:\DNU\Aspirant\MagistrSolution_release\Common\obj\Debug\ResolveAssemblyReference.cache
+E:\DNU\Aspirant\MagistrSolution_release\Common\obj\Debug\Common.dll
+E:\DNU\Aspirant\MagistrSolution_release\Common\obj\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\bin\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\bin\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\bin\Debug\SX.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\obj\Debug\ResolveAssemblyReference.cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\obj\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release\Common\obj\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\bin\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\bin\Debug\Common.pdb
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\bin\Debug\SX.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\obj\Debug\Common.dll
+G:\DNU\DNU_Diplom_Release\MagistrSolution_release_vs2010\Common\obj\Debug\Common.pdb
