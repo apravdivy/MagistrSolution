@@ -1,6 +1,5 @@
 G:\!JIT\MagistrSolution\MagistrSolution\Common\bin\Debug\Common.dll
 G:\!JIT\MagistrSolution\MagistrSolution\Common\bin\Debug\Common.pdb
 G:\!JIT\MagistrSolution\MagistrSolution\Common\bin\Debug\SX.dll
-G:\!JIT\MagistrSolution\MagistrSolution\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
 G:\!JIT\MagistrSolution\MagistrSolution\Common\obj\Debug\Common.dll
 G:\!JIT\MagistrSolution\MagistrSolution\Common\obj\Debug\Common.pdb

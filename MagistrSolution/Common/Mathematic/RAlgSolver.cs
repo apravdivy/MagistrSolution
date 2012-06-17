@@ -39,9 +39,9 @@ namespace Common.Mathematic
             return System.Math.Pow(val, 2);
         }
 
-        public delegate void FUNCTDelegate(ref double f_1, ref double[] x_1, ref double[] g_1);
+        public delegate void RAlgFunctionDelegate(ref double f_1, ref double[] x_1, ref double[] g_1);
 
-        public FUNCTDelegate FUNCT;
+        public RAlgFunctionDelegate FUNCT;
 
         //public void FUNCT2(double f_1, ref double[] x_1, ref double[] g_1)//st-nomer stroki
         //{
@@ -209,7 +209,7 @@ namespace Common.Mathematic
             return f;
         }
 
-        public  double alpha;
+        public double alpha;
 
         private double CalcFunct2_1(TaskParameters taskP)
         {
@@ -248,15 +248,14 @@ namespace Common.Mathematic
                 rk[i] = v[index];
                 this.itab[i] = index + 1;
                 //f += min * min * h;
-                f += (Math.Pow(min1List[index], 2) + alpha*(v[index][0]*v[index][0]+v[index][1]*v[index][1])) * h;
+                f += (Math.Pow(min1List[index], 2) + alpha * (v[index][0] * v[index][0] + v[index][1] * v[index][1])) * h;
                 t = t + h;
             }
 
             return f;
         }
-
-        private delegate double CalcFunctDelegate(TaskParameters taskP);
-        private CalcFunctDelegate calcFunct;
+        
+        private Func<TaskParameters, double> calcFunct;
 
         public void FUNCT4(ref double f_1, ref double[] x_1, ref double[] g_1)//st-nomer stroki
         {
@@ -541,7 +540,7 @@ namespace Common.Mathematic
             this.tp = new TaskParameters(list, double.MinValue);
         }
 
-      
+
 
         public RAlgSolver(TaskWorker tw, RKResults res, List<List<double>> startParameters, double[] dz)
             : this(tw, res, startParameters)
@@ -549,23 +548,23 @@ namespace Common.Mathematic
             this.dz = dz;
         }
 
-        public RAlgSolver(TaskWorker tw, RKResults res, List<List<double>> startParameters, Vector startP,int method)
+        public RAlgSolver(TaskWorker tw, RKResults res, List<List<double>> startParameters, Vector startP, int method)
             : this(tw, res, startParameters)
         {
             this.startP = startP;
             if (this.startP.Count == 1)
             {
-                this.calcFunct += new CalcFunctDelegate(this.CalcFunct1);
+                this.calcFunct += new Func<TaskParameters, double>(this.CalcFunct1);
             }
             else
             {
-                if(method==0)
+                if (method == 0)
                 {
-                this.calcFunct += new CalcFunctDelegate(this.CalcFunct2);
+                    this.calcFunct += new Func<TaskParameters, double>(this.CalcFunct2);
                 }
                 else
                 {
-                    this.calcFunct+=new CalcFunctDelegate(this.CalcFunct2_1);
+                    this.calcFunct += new Func<TaskParameters, double>(this.CalcFunct2_1);
                 }
             }
         }

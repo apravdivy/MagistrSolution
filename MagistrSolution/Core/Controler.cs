@@ -37,7 +37,7 @@ namespace Core
         public Controler(IView view)
         {
             this.view = view;
-            this.view.ViewAction += new ViewEventHandler(view_ViewAction);
+            this.view.ViewAction += new Func<ViewEventType, ViewEventArgs,object>(view_ViewAction);
         }
 
         public void Start()
@@ -65,7 +65,7 @@ namespace Core
                         Random r = new Random();
                         double y0 = this.z1min + r.NextDouble() * (this.z1max - this.z1min);
                         RKVectorForm rk = new RKVectorForm(fe, curveName, this.t0, this.t1, new Vector(1, y0));
-                        rk.OnResultGenerated += new RKResultGeneratedDelegate(rk_OnResultGenerated);
+                        rk.OnResultGenerated += new Action<RKResult, string>(rk_OnResultGenerated);
                         rk.SolveWithConstH(rkN, RKMetodType.RK4_1);
                         break;
                     }
@@ -85,7 +85,7 @@ namespace Core
                                 double z00 = this.z1min + i * h1;
                                 double z01 = this.z2min + j * h2;
                                 RKVectorForm rk = new RKVectorForm(fe, curveNames[i, j], this.t0, this.t1, new Vector(2, z00, z01));
-                                rk.OnSolvingDone += new RKSolvingDoneDelegate(rk_OnSolvingDone);
+                                rk.OnSolvingDone += new Action<RKResults, string, IFunctionExecuter>(rk_OnSolvingDone);
                                 RKResults res = rk.SolveWithConstH(rkN, RKMetodType.RK4_1);
                                 results.Add(curveNames[i, j], res);
                             }
@@ -100,8 +100,8 @@ namespace Core
 
                         RKVectorForm rk = new RKVectorForm(fe, curveName, this.t0, this.t1, new Vector(1, this.y0));
 
-                        rk.OnResultGenerated += new RKResultGeneratedDelegate(rk_OnResultGenerated);
-                        rk.OnSolvingDone += new RKSolvingDoneDelegate(rk_OnSolvingDoneType1);
+                        rk.OnResultGenerated += new Action<RKResult, string>(rk_OnResultGenerated);
+                        rk.OnSolvingDone += new Action<RKResults, string, IFunctionExecuter>(rk_OnSolvingDoneType1);
                         rk.SolveWithConstH(rkN, RKMetodType.RK4_1);
                         break;
                     }
@@ -113,8 +113,8 @@ namespace Core
 
                         RKVectorForm rk = new RKVectorForm(fe, curveName, this.t0, this.t1, new Vector(2, this.y00, this.y01));
 
-                        rk.OnResultGenerated += new RKResultGeneratedDelegate(rk_OnResGenForType2);
-                        rk.OnSolvingDone += new RKSolvingDoneDelegate(rk_OnSolvingDoneType2);
+                        rk.OnResultGenerated += new Action<RKResult, string>(rk_OnResGenForType2);
+                        rk.OnSolvingDone += new Action<RKResults, string, IFunctionExecuter>(rk_OnSolvingDoneType2);
                         rk.SolveWithConstH(rkN, RKMetodType.RK4_1);
                         break;
                     }
@@ -165,17 +165,17 @@ namespace Core
             return null;
         }
 
-        private void rk_OnSolvingDone(RKResults res, string curve,IFunctionExecuter fe)
+        private void rk_OnSolvingDone(RKResults res, string curve, IFunctionExecuter fe)
         {
             this.view.DrawResult(res, curve);
         }
 
-        private void rk_OnSolvingDoneType1(RKResults res,string c, IFunctionExecuter fe)
+        private void rk_OnSolvingDoneType1(RKResults res, string c, IFunctionExecuter fe)
         {
             this.view.SendSolvingResultType1(res, fe);
         }
 
-        private void rk_OnSolvingDoneType2(RKResults res,string c, IFunctionExecuter fe)
+        private void rk_OnSolvingDoneType2(RKResults res, string c, IFunctionExecuter fe)
         {
             this.view.SendSolvingResultType2(res, fe);
         }

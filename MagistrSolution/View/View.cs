@@ -23,7 +23,7 @@ namespace View
         public View()
         {
             this.taskCollection = this.loadTaskCollection();
-            
+
         }
 
         public TaskCollection loadTaskCollection()
@@ -86,9 +86,9 @@ namespace View
 
         #region IView Members
 
-        public event ViewEventHandler ViewAction;
+        public event Func<ViewEventType, ViewEventArgs, object> ViewAction;
 
-        delegate void EmptyDelegate();
+
         public void ShowMainForm()
         {
             if (IsNullOrDisposed(this.mainForm))
@@ -97,7 +97,7 @@ namespace View
             }
             if (this.mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new EmptyDelegate(this.ShowMainForm));
+                this.mainForm.BeginInvoke(new Action(this.ShowMainForm));
             }
             else
             {
@@ -106,12 +106,11 @@ namespace View
             }
         }
 
-        delegate void DrawPointDelegate(double p, List<double> val, string curveName);
         public void DrawPoint(double p, List<double> list, string curveName)
         {
             if (this.mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new DrawPointDelegate(this.DrawPoint), p, list, curveName);
+                this.mainForm.BeginInvoke(new Action<double, List<double>, string>(this.DrawPoint), p, list, curveName);
             }
             else
             {
@@ -123,7 +122,7 @@ namespace View
         {
             if (this.mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new DrawPointDelegate(this.DrawPoint2), p, list, curveName);
+                this.mainForm.BeginInvoke(new Action<double, List<double>, string>(this.DrawPoint2), p, list, curveName);
             }
             else
             {
@@ -215,7 +214,7 @@ namespace View
         {
             if (this.mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new DrawPointDelegate(this.DrawPoint2), p, list, curveName);
+                this.mainForm.BeginInvoke(new Action<double, List<double>, string>(this.DrawPoint2), p, list, curveName);
             }
             else
             {
@@ -323,12 +322,11 @@ namespace View
 
         }
 
-        private delegate void ShowResultType2MassDelegate(ZedGraph.PointPairList p, Dictionary<string, List<ResPointViewType2>> r);
         private void ShowResultType2Mass(ZedGraph.PointPairList p, Dictionary<string, List<ResPointViewType2>> r)
         {
             if (mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new ShowResultType2MassDelegate(this.ShowResultType2Mass), p, r);
+                this.mainForm.BeginInvoke(new Action<PointPairList, Dictionary<string, List<ResPointViewType2>>>(this.ShowResultType2Mass), p, r);
             }
             else
             {
@@ -394,12 +392,11 @@ namespace View
             }
         }
 
-        private delegate void ssDelegate(RKResults res, string curve);
         public void DrawResult(RKResults res, string curve)
         {
             if (this.mainForm.InvokeRequired)
             {
-                this.mainForm.BeginInvoke(new ssDelegate(this.DrawResult),res,curve);
+                this.mainForm.BeginInvoke(new Action<RKResults, string>(this.DrawResult), res, curve);
             }
             else
             {

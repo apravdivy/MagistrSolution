@@ -13,7 +13,7 @@ namespace Common.Mathematic
         protected double t1;
         protected Vector Y0;
 
-        public FunctionDelegate f;
+        public Func<double, Vector, Vector> f;
 
         private IFunctionExecuter fe = null;
 
@@ -27,9 +27,9 @@ namespace Common.Mathematic
 
         private string curveName;
 
-        public event RKResultGeneratedDelegate OnResultGenerated;
+        public event Action<RKResult, string> OnResultGenerated;
 
-        public event RKSolvingDoneDelegate OnSolvingDone;
+        public event Action<RKResults, string, IFunctionExecuter> OnSolvingDone;
 
         private void OnResultGeneratedCall(RKResult r)
         {
@@ -44,14 +44,14 @@ namespace Common.Mathematic
         /// </summary>
         /// <param name="f">delegate</param>
         /// <param name="c">0-main, 1-left,2-right</param>
-        private RKVectorForm(FunctionDelegate f, string curveName)
+        private RKVectorForm(Func<double, Vector, Vector> f, string curveName)
         {
             this.f = f;
             this.curveName = curveName;
         }
 
         public RKVectorForm(IFunctionExecuter fe, string curveName)
-            : this(new FunctionDelegate(fe.AbstractFunction), curveName)
+            : this(new Func<double, Vector, Vector>(fe.AbstractFunction), curveName)
         {
             this.fe = fe;
         }
@@ -132,7 +132,7 @@ namespace Common.Mathematic
             res = y + (f0 + f1) / 2;
             return res;
         }
-      
+
         protected Vector RK2_2(double x, Vector y, double h)
         {
             Vector res = new Vector(N);
@@ -162,15 +162,15 @@ namespace Common.Mathematic
             RKResults res = new RKResults();
             t.Clear();
             z.Clear();
-            RKMetodDelegate RKfunc = null;
+            Func<double, Vector, double, Vector> RKfunc = null;
             switch (type)
             {
-                case RKMetodType.RK4_1: RKfunc = new RKMetodDelegate(RK4_1); break;
-                case RKMetodType.RK4_2: RKfunc = new RKMetodDelegate(RK4_2); break;
-                case RKMetodType.RK3_1: RKfunc = new RKMetodDelegate(RK3_1); break;
-                case RKMetodType.RK3_2: RKfunc = new RKMetodDelegate(RK3_2); break;
-                case RKMetodType.RK2_1: RKfunc = new RKMetodDelegate(RK2_1); break;
-                case RKMetodType.RK2_2: RKfunc = new RKMetodDelegate(RK2_2); break;
+                case RKMetodType.RK4_1: RKfunc = new Func<double, Vector, double, Vector>(RK4_1); break;
+                case RKMetodType.RK4_2: RKfunc = new Func<double, Vector, double, Vector>(RK4_2); break;
+                case RKMetodType.RK3_1: RKfunc = new Func<double, Vector, double, Vector>(RK3_1); break;
+                case RKMetodType.RK3_2: RKfunc = new Func<double, Vector, double, Vector>(RK3_2); break;
+                case RKMetodType.RK2_1: RKfunc = new Func<double, Vector, double, Vector>(RK2_1); break;
+                case RKMetodType.RK2_2: RKfunc = new Func<double, Vector, double, Vector>(RK2_2); break;
             }
             double h = (this.t1 - this.t0) / N;
             RKVectorForm.H = h;
@@ -193,23 +193,23 @@ namespace Common.Mathematic
             }
             if (this.OnSolvingDone != null)
             {
-                this.OnSolvingDone(res,this.curveName, this.fe);
+                this.OnSolvingDone(res, this.curveName, this.fe);
             }
             return res;
         }
 
         public void SolveWithAdaptiveH(int NumMet)
         {
-            RKMetodDelegate RKfunc = null;
+            Func<double, Vector, double, Vector> RKfunc = null;
             int k = 0;
             switch (NumMet)
             {
-                case 0: RKfunc = new RKMetodDelegate(RK4_1); eps = 0.0001; k = 4; break;
-                case 1: RKfunc = new RKMetodDelegate(RK4_2); eps = 0.0001; k = 4; break;
-                case 2: RKfunc = new RKMetodDelegate(RK3_1); eps = 0.001; k = 3; break;
-                case 3: RKfunc = new RKMetodDelegate(RK3_2); eps = 0.001; k = 3; break;
-                case 4: RKfunc = new RKMetodDelegate(RK2_1); eps = 0.01; k = 2; break;
-                case 5: RKfunc = new RKMetodDelegate(RK2_2); eps = 0.01; k = 2; break;
+                case 0: RKfunc = new Func<double, Vector, double, Vector>(RK4_1); eps = 0.0001; k = 4; break;
+                case 1: RKfunc = new Func<double, Vector, double, Vector>(RK4_2); eps = 0.0001; k = 4; break;
+                case 2: RKfunc = new Func<double, Vector, double, Vector>(RK3_1); eps = 0.001; k = 3; break;
+                case 3: RKfunc = new Func<double, Vector, double, Vector>(RK3_2); eps = 0.001; k = 3; break;
+                case 4: RKfunc = new Func<double, Vector, double, Vector>(RK2_1); eps = 0.01; k = 2; break;
+                case 5: RKfunc = new Func<double, Vector, double, Vector>(RK2_2); eps = 0.01; k = 2; break;
             }
             t.Clear();
             z.Clear();

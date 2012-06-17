@@ -22,8 +22,6 @@ namespace View.Forms
 {
     public partial class MainForm : Form
     {
-        private delegate double[] EmptyDelegate();
-
         public View view;
 
         public Dictionary<string, PointPairList> curves = new Dictionary<string, PointPairList>();
@@ -366,12 +364,11 @@ namespace View.Forms
             this.dgv.DataSource = r[lb.Items[lb.SelectedIndex].ToString()];
         }
 
-        private delegate void DrawCurvesDelegate(Dictionary<string, RKResults> results);
         internal void DrawCurves(Dictionary<string, RKResults> results)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new DrawCurvesDelegate(this.DrawCurves), results);
+                this.Invoke(new Action<Dictionary<string, RKResults>>(this.DrawCurves), results);
             }
             else
             {
@@ -766,12 +763,11 @@ namespace View.Forms
             return res1;
         }
 
-        delegate void SetControlFeatheDelegate(Control c, string t, object value);
         public void SetControlFeathe(Control c, string t, object value)
         {
             if (c.InvokeRequired)
             {
-                c.BeginInvoke(new SetControlFeatheDelegate(this.SetControlFeathe), c, t, value);
+                c.BeginInvoke(new Action<Control, string, object>(this.SetControlFeathe), c, t, value);
             }
             else
             {
@@ -825,7 +821,7 @@ namespace View.Forms
                 List<List<double>> sp = this.randomStartParameters;
 
                 RAlgSolver ra = this.setCount == 1 ? new RAlgSolver(tw, res, sp, dz1) : new RAlgSolver(tw, res, sp, dz2);
-                ra.FUNCT = new RAlgSolver.FUNCTDelegate(ra.FUNCT3);
+                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT3);
                 ra.R_Algorithm();
 
                 double functional;
@@ -874,7 +870,7 @@ namespace View.Forms
                 List<List<double>> sp = this.randomStartParameters;
 
                 RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 0);
-                ra.FUNCT = new RAlgSolver.FUNCTDelegate(ra.FUNCT4);
+                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
                 ra.R_Algorithm();
                 double functional;
                 this.DrawRes(ra, this.curveName2, this.curveNameSuff, Color.Blue, this.view.Output, 2, out functional);
@@ -935,9 +931,7 @@ namespace View.Forms
 
         private void btnAddTask_Click(object sender, EventArgs e)
         {
-            EnterNameForm f = new EnterNameForm();
-
-            try
+            using (EnterNameForm f = new EnterNameForm())
             {
                 f.ShowDialog();
                 if (f.DialogResult == DialogResult.OK)
@@ -951,7 +945,6 @@ namespace View.Forms
                     this.lstTasks.Items.Add(td.name);
                 }
             }
-            finally { f.Dispose(); }
         }
 
         private Task LoadTaskInfo(bool isEdit)
@@ -1276,7 +1269,7 @@ namespace View.Forms
         {
 
             double alpha;
-            if (double.TryParse(this.txtAlpha.Text,System.Globalization.NumberStyles.AllowDecimalPoint,System.Globalization.CultureInfo.CurrentUICulture, out alpha))
+            if (double.TryParse(this.txtAlpha.Text, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out alpha))
             {
                 Thread th = new Thread(new ParameterizedThreadStart(this.SolveRalg3))
             {
@@ -1312,7 +1305,7 @@ namespace View.Forms
                 List<List<double>> sp = this.randomStartParameters;
 
                 RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 1);
-                ra.FUNCT = new RAlgSolver.FUNCTDelegate(ra.FUNCT4);
+                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
                 ra.alpha = a;
                 ra.R_Algorithm();
 

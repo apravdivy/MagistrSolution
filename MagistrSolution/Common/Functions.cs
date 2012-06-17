@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Common
 {
-    public class Functions
+    public sealed class Functions
     {
         public static double Alpha;
         public static double alpha = 5;

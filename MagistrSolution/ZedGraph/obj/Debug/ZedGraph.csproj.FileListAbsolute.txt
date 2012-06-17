@@ -272,7 +272,6 @@ G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\bin\Debug\it\ZedGraph.resources
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\bin\Debug\ja\ZedGraph.resources.dll
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\bin\Debug\pt\ZedGraph.resources.dll
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\bin\Debug\sv\ZedGraph.resources.dll
-G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\obj\Debug\ZedGraph.csprojResolveAssemblyReference.cache
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\obj\Debug\ZedGraph.ZedGraph.ZedGraphControl.resources
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\obj\Debug\ZedGraph.ZedGraph.ZedGraphLocale.resources
 G:\!JIT\MagistrSolution\MagistrSolution\ZedGraph\obj\Debug\ZedGraph.ZedGraph.ZedGraphLocale.tw.resources

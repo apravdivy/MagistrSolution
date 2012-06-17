@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common</RootNamespace>
     <AssemblyName>Common</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -31,6 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,14 +79,12 @@
   <ItemGroup>
     <Compile Include="JSONHelper.cs" />
     <Compile Include="Functions_2_2.cs" />
-    <Compile Include="Delegates.cs" />
     <Compile Include="FuncDescrAttribute.cs" />
     <Compile Include="Task\FunctionExecuter.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Task\TaskCollection.cs" />
     <Compile Include="Task\Task.cs" />
     <Compile Include="Task\IFunctionExecuter.cs" />
-    <Compile Include="Mathematic\Delegates.cs" />
     <Compile Include="Mathematic\RAlgSolver.cs" />
     <Compile Include="Mathematic\RKMetodType.cs" />
     <Compile Include="Mathematic\RKResult.cs" />
