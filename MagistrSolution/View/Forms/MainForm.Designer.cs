@@ -76,14 +76,17 @@
             this.controlContainer1 = new DevExpress.XtraBars.Docking.ControlContainer();
             this.meOutput = new DevExpress.XtraEditors.MemoEdit();
             this.xtpPage5 = new DevExpress.XtraTab.XtraTabPage();
+            this.speStep = new DevExpress.XtraEditors.SpinEdit();
+            this.lblStep = new System.Windows.Forms.Label();
+            this.btnSolveAll = new DevExpress.XtraEditors.SimpleButton();
             this.txtAlpha = new System.Windows.Forms.TextBox();
             this.lblAlpha = new System.Windows.Forms.Label();
             this.btnSolveRAlg3 = new DevExpress.XtraEditors.SimpleButton();
             this.btnGenerateStartParam = new DevExpress.XtraEditors.SimpleButton();
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
             this.zgcMainChart2 = new ZedGraph.ZedGraphControl();
-            this.dgvTabRes = new DevExpress.XtraGrid.GridControl();
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.grcTabRes = new DevExpress.XtraGrid.GridControl();
+            this.grvTabRes = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnResults = new DevExpress.XtraEditors.SimpleButton();
             this.btnSolveRAlg2 = new DevExpress.XtraEditors.SimpleButton();
             this.btnSolveRAlg1 = new DevExpress.XtraEditors.SimpleButton();
@@ -138,10 +141,11 @@
             this.controlContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.meOutput.Properties)).BeginInit();
             this.xtpPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speStep.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTabRes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grcTabRes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grvTabRes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParameters)).BeginInit();
             this.pnlRbN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGama)).BeginInit();
@@ -191,7 +195,7 @@
             this.pnlControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlControls.Location = new System.Drawing.Point(0, 0);
             this.pnlControls.Name = "pnlControls";
-            this.pnlControls.Size = new System.Drawing.Size(186, 753);
+            this.pnlControls.Size = new System.Drawing.Size(184, 754);
             this.pnlControls.TabIndex = 0;
             // 
             // btnGo2
@@ -552,9 +556,9 @@
             // dockPanel1_Container
             // 
             this.dockPanel1_Container.Controls.Add(this.pnlControls);
-            this.dockPanel1_Container.Location = new System.Drawing.Point(3, 25);
+            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 23);
             this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(186, 753);
+            this.dockPanel1_Container.Size = new System.Drawing.Size(184, 754);
             this.dockPanel1_Container.TabIndex = 0;
             // 
             // dpOutput
@@ -573,9 +577,9 @@
             // controlContainer1
             // 
             this.controlContainer1.Controls.Add(this.meOutput);
-            this.controlContainer1.Location = new System.Drawing.Point(3, 25);
+            this.controlContainer1.Location = new System.Drawing.Point(4, 23);
             this.controlContainer1.Name = "controlContainer1";
-            this.controlContainer1.Size = new System.Drawing.Size(1047, 172);
+            this.controlContainer1.Size = new System.Drawing.Size(1045, 173);
             this.controlContainer1.TabIndex = 0;
             // 
             // meOutput
@@ -586,11 +590,14 @@
             this.meOutput.Properties.AppearanceReadOnly.BackColor = System.Drawing.Color.White;
             this.meOutput.Properties.AppearanceReadOnly.Options.UseBackColor = true;
             this.meOutput.Properties.ReadOnly = true;
-            this.meOutput.Size = new System.Drawing.Size(1047, 172);
+            this.meOutput.Size = new System.Drawing.Size(1045, 173);
             this.meOutput.TabIndex = 0;
             // 
             // xtpPage5
             // 
+            this.xtpPage5.Controls.Add(this.speStep);
+            this.xtpPage5.Controls.Add(this.lblStep);
+            this.xtpPage5.Controls.Add(this.btnSolveAll);
             this.xtpPage5.Controls.Add(this.txtAlpha);
             this.xtpPage5.Controls.Add(this.lblAlpha);
             this.xtpPage5.Controls.Add(this.btnSolveRAlg3);
@@ -614,8 +621,47 @@
             this.xtpPage5.Controls.Add(this.dgvGama);
             this.xtpPage5.Controls.Add(this.mfList);
             this.xtpPage5.Name = "xtpPage5";
-            this.xtpPage5.Size = new System.Drawing.Size(1046, 552);
+            this.xtpPage5.Size = new System.Drawing.Size(1047, 555);
             this.xtpPage5.Text = "Reshalka2";
+            // 
+            // speStep
+            // 
+            this.speStep.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.speStep.Location = new System.Drawing.Point(933, 93);
+            this.speStep.Name = "speStep";
+            this.speStep.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
+            this.speStep.Properties.MaxValue = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.speStep.Size = new System.Drawing.Size(82, 20);
+            this.speStep.TabIndex = 54;
+            this.speStep.EditValueChanged += new System.EventHandler(this.speStep_EditValueChanged);
+            // 
+            // lblStep
+            // 
+            this.lblStep.AutoSize = true;
+            this.lblStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblStep.Location = new System.Drawing.Point(883, 96);
+            this.lblStep.Name = "lblStep";
+            this.lblStep.Size = new System.Drawing.Size(46, 13);
+            this.lblStep.TabIndex = 53;
+            this.lblStep.Text = "step = ";
+            // 
+            // btnSolveAll
+            // 
+            this.btnSolveAll.Location = new System.Drawing.Point(809, 182);
+            this.btnSolveAll.Name = "btnSolveAll";
+            this.btnSolveAll.Size = new System.Drawing.Size(61, 23);
+            this.btnSolveAll.TabIndex = 52;
+            this.btnSolveAll.Text = "Exp";
+            this.btnSolveAll.Click += new System.EventHandler(this.btnSolveAll_Click);
             // 
             // txtAlpha
             // 
@@ -655,14 +701,14 @@
             // 
             // splitContainerControl1
             // 
-            this.splitContainerControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainerControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerControl1.Location = new System.Drawing.Point(6, 211);
             this.splitContainerControl1.Name = "splitContainerControl1";
             this.splitContainerControl1.Panel1.Controls.Add(this.zgcMainChart2);
             this.splitContainerControl1.Panel1.Text = "Panel1";
-            this.splitContainerControl1.Panel2.Controls.Add(this.dgvTabRes);
+            this.splitContainerControl1.Panel2.Controls.Add(this.grcTabRes);
             this.splitContainerControl1.Panel2.Text = "Panel2";
             this.splitContainerControl1.Size = new System.Drawing.Size(1037, 334);
             this.splitContainerControl1.SplitterPosition = 443;
@@ -683,34 +729,35 @@
             this.zgcMainChart2.Size = new System.Drawing.Size(443, 334);
             this.zgcMainChart2.TabIndex = 31;
             // 
-            // dgvTabRes
+            // grcTabRes
             // 
-            this.dgvTabRes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvTabRes.Location = new System.Drawing.Point(0, 0);
-            this.dgvTabRes.MainView = this.gridView1;
-            this.dgvTabRes.Name = "dgvTabRes";
-            this.dgvTabRes.Size = new System.Drawing.Size(588, 334);
-            this.dgvTabRes.TabIndex = 42;
-            this.dgvTabRes.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView1});
+            this.grcTabRes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grcTabRes.Location = new System.Drawing.Point(0, 0);
+            this.grcTabRes.MainView = this.grvTabRes;
+            this.grcTabRes.Name = "grcTabRes";
+            this.grcTabRes.Size = new System.Drawing.Size(589, 334);
+            this.grcTabRes.TabIndex = 42;
+            this.grcTabRes.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.grvTabRes});
             // 
-            // gridView1
+            // grvTabRes
             // 
-            this.gridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.gridView1.GridControl = this.dgvTabRes;
-            this.gridView1.Name = "gridView1";
-            this.gridView1.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
-            this.gridView1.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
-            this.gridView1.OptionsBehavior.Editable = false;
-            this.gridView1.OptionsCustomization.AllowGroup = false;
-            this.gridView1.OptionsMenu.EnableFooterMenu = false;
-            this.gridView1.OptionsMenu.EnableGroupPanelMenu = false;
-            this.gridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridView1.OptionsSelection.MultiSelect = true;
+            this.grvTabRes.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.grvTabRes.GridControl = this.grcTabRes;
+            this.grvTabRes.Name = "grvTabRes";
+            this.grvTabRes.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
+            this.grvTabRes.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
+            this.grvTabRes.OptionsBehavior.Editable = false;
+            this.grvTabRes.OptionsCustomization.AllowGroup = false;
+            this.grvTabRes.OptionsMenu.EnableFooterMenu = false;
+            this.grvTabRes.OptionsMenu.EnableGroupPanelMenu = false;
+            this.grvTabRes.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.grvTabRes.OptionsSelection.MultiSelect = true;
+            this.grvTabRes.CustomDrawCell += new DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventHandler(this.grvTabRes_CustomDrawCell);
             // 
             // btnResults
             // 
-            this.btnResults.Location = new System.Drawing.Point(814, 180);
+            this.btnResults.Location = new System.Drawing.Point(876, 182);
             this.btnResults.Name = "btnResults";
             this.btnResults.Size = new System.Drawing.Size(56, 23);
             this.btnResults.TabIndex = 46;
@@ -896,7 +943,7 @@
             this.xtpPage4.Controls.Add(this.splitContainerControl2);
             this.xtpPage4.Controls.Add(this.panel1);
             this.xtpPage4.Name = "xtpPage4";
-            this.xtpPage4.Size = new System.Drawing.Size(1046, 552);
+            this.xtpPage4.Size = new System.Drawing.Size(1047, 555);
             this.xtpPage4.Text = "Reshalka1";
             // 
             // splitContainerControl2
@@ -909,7 +956,7 @@
             this.splitContainerControl2.Panel2.Controls.Add(this.dgv);
             this.splitContainerControl2.Panel2.Controls.Add(this.listBox1);
             this.splitContainerControl2.Panel2.Text = "Panel2";
-            this.splitContainerControl2.Size = new System.Drawing.Size(1046, 514);
+            this.splitContainerControl2.Size = new System.Drawing.Size(1047, 517);
             this.splitContainerControl2.SplitterPosition = 456;
             this.splitContainerControl2.TabIndex = 10;
             this.splitContainerControl2.Text = "splitContainerControl2";
@@ -925,7 +972,7 @@
             this.zgSolve1.ScrollMinX = 0D;
             this.zgSolve1.ScrollMinY = 0D;
             this.zgSolve1.ScrollMinY2 = 0D;
-            this.zgSolve1.Size = new System.Drawing.Size(456, 514);
+            this.zgSolve1.Size = new System.Drawing.Size(456, 517);
             this.zgSolve1.TabIndex = 7;
             // 
             // dgv
@@ -936,7 +983,7 @@
             this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv.Location = new System.Drawing.Point(0, 160);
             this.dgv.Name = "dgv";
-            this.dgv.Size = new System.Drawing.Size(584, 354);
+            this.dgv.Size = new System.Drawing.Size(586, 357);
             this.dgv.TabIndex = 12;
             // 
             // listBox1
@@ -945,7 +992,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(584, 160);
+            this.listBox1.Size = new System.Drawing.Size(586, 160);
             this.listBox1.TabIndex = 11;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -957,7 +1004,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1046, 38);
+            this.panel1.Size = new System.Drawing.Size(1047, 38);
             this.panel1.TabIndex = 4;
             // 
             // simpleButton1
@@ -991,7 +1038,7 @@
             // 
             this.xtpPage1.Controls.Add(this.zgc1);
             this.xtpPage1.Name = "xtpPage1";
-            this.xtpPage1.Size = new System.Drawing.Size(1046, 552);
+            this.xtpPage1.Size = new System.Drawing.Size(1047, 555);
             this.xtpPage1.Text = "Graphic";
             // 
             // zgc1
@@ -1005,7 +1052,7 @@
             this.zgc1.ScrollMinX = 0D;
             this.zgc1.ScrollMinY = 0D;
             this.zgc1.ScrollMinY2 = 0D;
-            this.zgc1.Size = new System.Drawing.Size(1046, 552);
+            this.zgc1.Size = new System.Drawing.Size(1047, 555);
             this.zgc1.TabIndex = 4;
             // 
             // xtcMain
@@ -1026,7 +1073,7 @@
             // 
             this.xtraTabPage1.Controls.Add(this.splitContainerControl3);
             this.xtraTabPage1.Name = "xtraTabPage1";
-            this.xtraTabPage1.Size = new System.Drawing.Size(1046, 552);
+            this.xtraTabPage1.Size = new System.Drawing.Size(1047, 555);
             this.xtraTabPage1.Text = "--";
             // 
             // splitContainerControl3
@@ -1038,7 +1085,7 @@
             this.splitContainerControl3.Panel1.Text = "Panel1";
             this.splitContainerControl3.Panel2.Controls.Add(this.panel2);
             this.splitContainerControl3.Panel2.Text = "Panel2";
-            this.splitContainerControl3.Size = new System.Drawing.Size(1046, 552);
+            this.splitContainerControl3.Size = new System.Drawing.Size(1047, 555);
             this.splitContainerControl3.SplitterPosition = 645;
             this.splitContainerControl3.TabIndex = 2;
             this.splitContainerControl3.Text = "splitContainerControl3";
@@ -1054,7 +1101,7 @@
             this.zedAprox.ScrollMinX = 0D;
             this.zedAprox.ScrollMinY = 0D;
             this.zedAprox.ScrollMinY2 = 0D;
-            this.zedAprox.Size = new System.Drawing.Size(645, 552);
+            this.zedAprox.Size = new System.Drawing.Size(645, 555);
             this.zedAprox.TabIndex = 1;
             // 
             // panel2
@@ -1073,7 +1120,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(395, 552);
+            this.panel2.Size = new System.Drawing.Size(397, 555);
             this.panel2.TabIndex = 2;
             // 
             // btnLoad
@@ -1211,10 +1258,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.meOutput.Properties)).EndInit();
             this.xtpPage5.ResumeLayout(false);
             this.xtpPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speStep.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
             this.splitContainerControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTabRes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grcTabRes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grvTabRes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParameters)).EndInit();
             this.pnlRbN.ResumeLayout(false);
             this.pnlRbN.PerformLayout();
@@ -1304,8 +1352,8 @@
         private System.Windows.Forms.ListBox sfList;
         private System.Windows.Forms.DataGridView dgvGama;
         private System.Windows.Forms.ListBox mfList;
-        private DevExpress.XtraGrid.GridControl dgvTabRes;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.GridControl grcTabRes;
+        private DevExpress.XtraGrid.Views.Grid.GridView grvTabRes;
         private DevExpress.XtraEditors.SimpleButton btnResults;
         private DevExpress.XtraEditors.SimpleButton btnSolveRAlg2;
         private DevExpress.XtraEditors.SimpleButton btnSolveRAlg1;
@@ -1339,5 +1387,8 @@
         public DevExpress.XtraEditors.MemoEdit meOutput;
         private System.Windows.Forms.TextBox txtAlpha;
         private System.Windows.Forms.Label lblAlpha;
+        private DevExpress.XtraEditors.SimpleButton btnSolveAll;
+        private DevExpress.XtraEditors.SpinEdit speStep;
+        private System.Windows.Forms.Label lblStep;
     }
 }

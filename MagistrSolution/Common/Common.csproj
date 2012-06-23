@@ -92,6 +92,7 @@
     <Compile Include="Mathematic\RKVectorForm.cs" />
     <Compile Include="Mathematic\Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Task\TaskParameter.cs" />
     <Compile Include="Task\TaskParameters.cs" />
     <Compile Include="Task\TaskWorker.cs" />
     <Compile Include="ViewEventArgs.cs" />

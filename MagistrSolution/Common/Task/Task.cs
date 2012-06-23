@@ -10,18 +10,23 @@ using System.Runtime.Serialization;
 namespace Common
 {
     [DataContract]
-    public class Task
+    public sealed class TaskDescription
     {
         [DataMember]
         public string name;
+
         [DataMember]
         public double t0;
+
         [DataMember]
         public double t1;
+
         [DataMember]
         public Vector startPoint;
+
         [DataMember]
         public List<List<double>> parametrs;
+
         [DataMember]
         public List<double> gammaSet;
 
@@ -31,7 +36,7 @@ namespace Common
         [DataMember]
         public SecondFuncType secFuncType;
 
-        public Task()
+        public TaskDescription()
         {
 
         }

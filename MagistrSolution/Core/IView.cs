@@ -6,6 +6,7 @@ using System.Text;
 using Common;
 using Common.Mathematic;
 using ZedGraph;
+using Common.Task;
 
 namespace Core
 {
@@ -18,7 +19,7 @@ namespace Core
 
     public interface IView
     {
-        event Func<ViewEventType, ViewEventArgs, object> ViewAction;
+        event Func<ViewEventType, ViewEventArgs, object> OnViewAction;
 
         void ShowMainForm();
 

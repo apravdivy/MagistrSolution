@@ -37,7 +37,7 @@ namespace Core
         public Controler(IView view)
         {
             this.view = view;
-            this.view.ViewAction += new Func<ViewEventType, ViewEventArgs,object>(view_ViewAction);
+            this.view.OnViewAction += new Func<ViewEventType, ViewEventArgs,object>(view_ViewAction);
         }
 
         public void Start()

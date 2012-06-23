@@ -17,6 +17,7 @@ using System.Reflection;
 using DevExpress.XtraEditors.Controls;
 using SmartXLS;
 using Common.Wawe;
+using Common.Task;
 
 namespace View.Forms
 {
@@ -201,7 +202,7 @@ namespace View.Forms
             mfList.SelectedIndex = 0;
 
             int i = 0;
-            foreach (Task t in this.view.taskCollection)
+            foreach (TaskDescription t in this.view.taskCollection)
             {
                 this.lstTasks.Items.Add(t.name);
                 i++;
@@ -458,7 +459,7 @@ namespace View.Forms
                 this.btnSolveRK.Enabled = false;
                 this.isReal = false;
                 this.view.Output.ClearScreen();
-                this.dgvTabRes.DataSource = null;
+                this.grcTabRes.DataSource = null;
                 this.n = int.Parse(this.txtN.Text, enUsCulture);
                 this.setCount = this.rbN1.Checked ? 1 : 2;
                 //this.gamma = double.Parse(txtGamma.Text);
@@ -556,18 +557,18 @@ namespace View.Forms
                     this.tblResList = new List<ResPointViewType1>();
                     for (int i = 0; i < res.Count - 1; i++)
                         (this.tblResList as List<ResPointViewType1>).Add(new ResPointViewType1(res[i].X, res[i].Y[0], -1, -1));
-                    this.dgvTabRes.DataSource = null;
-                    this.dgvTabRes.DataSource = tblResList;
+                    this.grcTabRes.DataSource = null;
+                    this.grcTabRes.DataSource = tblResList;
                 }
                 else
                 {
                     this.tblResList = new List<ResPointViewType2>();
                     for (int i = 0; i < res.Count - 2; i++)
                         (this.tblResList as List<ResPointViewType2>).Add(new ResPointViewType2(res[i].X, res[i].Y[0], res[i].Y[1], -1, -1));
-                    this.dgvTabRes.DataSource = null;
-                    this.dgvTabRes.DataSource = tblResList;
+                    this.grcTabRes.DataSource = null;
+                    this.grcTabRes.DataSource = tblResList;
                 }
-                this.dgvTabRes.RefreshDataSource();
+                this.grcTabRes.RefreshDataSource();
             }
             finally
             {
@@ -596,6 +597,18 @@ namespace View.Forms
         }
 
         private List<List<double>> GetRandomStartParam()
+        {
+            if (this.InvokeRequired)
+            {
+                return (List<List<double>>)this.Invoke(new Func<List<List<double>>>(_GetRandomParam));
+            }
+            else
+            {
+                return _GetRandomParam();
+            }
+        }
+
+        private List<List<double>> _GetRandomParam()
         {
             List<List<double>> sp = new List<List<double>>();
             Random rand = new Random();
@@ -632,42 +645,42 @@ namespace View.Forms
         private List<List<double>> randomStartParameters;
         bool isReal = false;
 
-        private RKResults DrawRes(RAlgSolver ra, string cn, string cnsuff, Color c, OutputHelper output, int eb, out double functional)
+        private RKResults DrawRes(RKResults r, RAlgSolver ra, string cn, string cnsuff, Color c, OutputHelper output, int eb, out double functional)
         {
             if (!isReal)
             {
-                for (int i = 0; i < res.Count - this.setCount; i++)
+                for (int i = 0; i < r.Count - this.setCount; i++)
                 {
                     if (eb == 1)
                     {
                         if (this.setCount == 1)
                         {
-                            (this.tblResList as List<ResPointViewType1>)[i].M1 = ra.itab[i];
+                            (this.tblResList as List<ResPointViewType1>)[i + i * step].M1 = ra.itab[i];
                         }
                         else
                         {
-                            (this.tblResList as List<ResPointViewType2>)[i].M1 = ra.itab[i];
+                            (this.tblResList as List<ResPointViewType2>)[i + i * step].M1 = ra.itab[i];
                         }
                     }
                     else
                     {
                         if (this.setCount == 1)
                         {
-                            (this.tblResList as List<ResPointViewType1>)[i].M2 = ra.itab[i];
+                            (this.tblResList as List<ResPointViewType1>)[i + i * step].M2 = ra.itab[i];
                         }
                         else
                         {
-                            (this.tblResList as List<ResPointViewType2>)[i].M2 = ra.itab[i];
+                            (this.tblResList as List<ResPointViewType2>)[i + i * step].M2 = ra.itab[i];
                         }
 
                     }
                 }
-                this.dgvTabRes.RefreshDataSource();
+                this.grcTabRes.RefreshDataSource();
             }
 
             StringBuilder sb = new StringBuilder();
 
-            Dictionary<double, int> tt = this.GetTT(this.res, ra.itab);
+            Dictionary<double, int> tt = this.GetTT(r, ra.itab);
 
             //-- draw res ---
             if (!this.curves.ContainsKey(cn))
@@ -757,17 +770,17 @@ namespace View.Forms
                     this.curves[cn + cnsuff].Add(res1[i].X, res1[i].Y[0]);
                 }
             }
-            this.SetControlFeathe(this.zgcMainChart2, "chart", null);
+            this.SetControlProperty(this.zgcMainChart2, "chart", null);
             //this.zgcMainChart2.AxisChange();
             //this.zgcMainChart2.Refresh();
             return res1;
         }
 
-        public void SetControlFeathe(Control c, string t, object value)
+        public void SetControlProperty(Control c, string t, object value)
         {
             if (c.InvokeRequired)
             {
-                c.BeginInvoke(new Action<Control, string, object>(this.SetControlFeathe), c, t, value);
+                c.BeginInvoke(new Action<Control, string, object>(this.SetControlProperty), c, t, value);
             }
             else
             {
@@ -791,62 +804,65 @@ namespace View.Forms
             }
         }
 
-        public void SolveRalg1()
-        {
-            try
-            {
-                if (this.randomStartParameters == null)
-                {
-                    throw new ApplicationException("Generate start parameters");
-                }
-                this.view.Output.WriteLine("SolveRalg1 started at " + DateTime.Now.ToString());
-                this.SetControlFeathe(this.btnSolveRAlg1, "enabled", false);
-                //this.btnSolveRAlg1.Enabled = false;
-                int tick = Environment.TickCount;
-
-                double[] dz1 = new double[res.Count - 1];
-                for (int i = 1; i < res.Count; i++)
-                {
-                    dz1[i - 1] = (res[i].Y[0] - res[i - 1].Y[0]) / (res[i].X - res[i - 1].X);
-                }
-                double[] dz2 = new double[res.Count - 2];
-                if (this.setCount == 2)
-                {
-                    for (int i = 1; i < dz1.Length; i++)
-                    {
-                        dz2[i - 1] = (dz1[i] - dz1[i - 1]) / (res[i].X - res[i - 1].X);
-                    }
-                }
-                //List<List<double>> sp = this.GetRandomStartParam();
-                List<List<double>> sp = this.randomStartParameters;
-
-                RAlgSolver ra = this.setCount == 1 ? new RAlgSolver(tw, res, sp, dz1) : new RAlgSolver(tw, res, sp, dz2);
-                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT3);
-                ra.R_Algorithm();
-
-                double functional;
-                this.DrawRes(ra, this.curveName1, this.curveNameSuff, Color.Green, this.view.Output, 1, out functional);
-
-                this.ra1 = ra;
-
-                double t = ((Environment.TickCount - tick) / (double)1000);
-                this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                this.inf1 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-            }
-            catch (ApplicationException ae)
-            {
-                MessageBox.Show(ae.Message);
-            }
-            finally
-            {
-                this.SetControlFeathe(this.btnSolveRAlg1, "enabled", true);
-                //this.btnSolveRAlg1.Enabled = true;
-            }
-        }
+        private int step = 0;
 
         private void btnSolveRAlg1_Click(object sender, EventArgs e)
         {
-            Thread th = new Thread(new ThreadStart(this.SolveRalg1))
+            Thread th = new Thread(x =>
+            {
+                try
+                {
+                    if (this.randomStartParameters == null)
+                    {
+                        GenerateStartParam();
+                    }
+                    this.view.Output.WriteLine("SolveRalg1 started at " + DateTime.Now.ToString());
+                    this.SetControlProperty(this.btnSolveRAlg1, "enabled", false);
+                    int tick = Environment.TickCount;
+
+                    var r = res.Trancate(this.step);
+
+                    double[] dz1 = new double[r.Count - 1];
+                    for (int i = 1; i < r.Count; i++)
+                    {
+                        dz1[i - 1] = (r[i].Y[0] - r[i - 1].Y[0]) / (r[i].X - r[i - 1].X);
+                    }
+
+                    double[] dz2 = new double[r.Count - 2];
+                    if (this.setCount == 2)
+                    {
+                        for (int i = 1; i < dz1.Length; i++)
+                        {
+                            dz2[i - 1] = (dz1[i] - dz1[i - 1]) / (r[i].X - r[i - 1].X);
+                        }
+                    }
+
+                    List<List<double>> sp = this.randomStartParameters;
+
+                    RAlgSolver ra = this.setCount == 1 ? new RAlgSolver(tw, r, sp, dz1) : new RAlgSolver(tw, r, sp, dz2);
+                    ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT3);
+                    ra.R_Algorithm();
+
+                    double functional;
+                    this.DrawRes(r, ra, this.curveName1, this.curveNameSuff, Color.Green, this.view.Output, 1, out functional);
+
+                    this.ra1 = ra;
+
+                    double t = ((Environment.TickCount - tick) / (double)1000);
+                    this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                    this.inf1 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                }
+                catch (ApplicationException ae)
+                {
+                    MessageBox.Show(ae.Message);
+                }
+                finally
+                {
+                    this.SetControlProperty(this.btnSolveRAlg1, "enabled", true);
+                    //this.btnSolveRAlg1.Enabled = true;
+                }
+            }
+            )
             {
                 Name = "RAlgSolve1",
                 IsBackground = true
@@ -854,44 +870,44 @@ namespace View.Forms
             th.Start();
         }
 
-        public void SolveRalg2()
-        {
-            try
-            {
-                if (this.randomStartParameters == null)
-                {
-                    throw new ApplicationException("Generate start parameters");
-                }
-                this.view.Output.WriteLine("SolveRalg2 started at " + DateTime.Now.ToString());
-                this.SetControlFeathe(this.btnSolveRAlg2, "enabled", false);
-                int tick = Environment.TickCount;
-                this.inf2 = null;
-                //List<List<double>> sp = this.GetRandomStartParam();
-                List<List<double>> sp = this.randomStartParameters;
-
-                RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 0);
-                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
-                ra.R_Algorithm();
-                double functional;
-                this.DrawRes(ra, this.curveName2, this.curveNameSuff, Color.Blue, this.view.Output, 2, out functional);
-                this.ra2 = ra;
-                double t = ((Environment.TickCount - tick) / (double)1000);
-                this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                this.inf2 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-            }
-            catch (ApplicationException ae)
-            {
-                MessageBox.Show(ae.Message);
-            }
-            finally
-            {
-                this.SetControlFeathe(this.btnSolveRAlg2, "enabled", true);
-            }
-        }
-
         private void btnSolveRAlg2_Click(object sender, EventArgs e)
         {
-            Thread th = new Thread(new ThreadStart(this.SolveRalg2))
+            Thread th = new Thread(x =>
+            {
+                try
+                {
+                    if (this.randomStartParameters == null)
+                    {
+                        GenerateStartParam();
+                    }
+                    this.view.Output.WriteLine("SolveRalg2 started at " + DateTime.Now.ToString());
+                    this.SetControlProperty(this.btnSolveRAlg2, "enabled", false);
+                    int tick = Environment.TickCount;
+                    this.inf2 = null;
+                    //List<List<double>> sp = this.GetRandomStartParam();
+                    List<List<double>> sp = this.randomStartParameters;
+
+                    var r = res.Trancate(this.step);
+
+                    RAlgSolver ra = new RAlgSolver(this.tw, r, sp, this.startVector, 0);
+                    ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
+                    ra.R_Algorithm();
+                    double functional;
+                    this.DrawRes(r, ra, this.curveName2, this.curveNameSuff, Color.Blue, this.view.Output, 2, out functional);
+                    this.ra2 = ra;
+                    double t = ((Environment.TickCount - tick) / (double)1000);
+                    this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                    this.inf2 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                }
+                catch (ApplicationException ae)
+                {
+                    MessageBox.Show(ae.Message);
+                }
+                finally
+                {
+                    this.SetControlProperty(this.btnSolveRAlg2, "enabled", true);
+                }
+            })
             {
                 Name = "MainForm.RAlgSolve2",
                 IsBackground = true
@@ -899,7 +915,6 @@ namespace View.Forms
             th.Start();
 
         }
-
 
         private string inf1 = null;
         private string inf2 = null;
@@ -937,7 +952,7 @@ namespace View.Forms
                 if (f.DialogResult == DialogResult.OK)
                 {
 
-                    Task td = this.LoadTaskInfo(false);
+                    TaskDescription td = this.LoadTaskInfo(false);
                     td.name = f.name;
                     this.view.taskCollection.Add(td);
                     this.view.SaveTaskCollection(this.view.taskCollection);
@@ -947,7 +962,7 @@ namespace View.Forms
             }
         }
 
-        private Task LoadTaskInfo(bool isEdit)
+        private TaskDescription LoadTaskInfo(bool isEdit)
         {
             List<double> gamma = new List<double>();
             Vector startV;
@@ -974,7 +989,7 @@ namespace View.Forms
             {
                 gamma.Add(double.Parse(this.dgvGama.Rows[0].Cells[i].Value.ToString().Replace(',', '.'), enUsCulture));
             }
-            Task td = new Task()
+            TaskDescription td = new TaskDescription()
             {
                 t0 = double.Parse(this.txtT0.Text.Replace(',', '.'), enUsCulture),
                 t1 = double.Parse(this.txtT1.Text.Replace(',', '.'), enUsCulture),
@@ -1000,7 +1015,7 @@ namespace View.Forms
 
             if (list.SelectedIndex >= 0)
             {
-                Task task = this.view.taskCollection.ElementAt(list.SelectedIndex);
+                TaskDescription task = this.view.taskCollection.ElementAt(list.SelectedIndex);
 
                 this.txtT0.Text = task.t0.ToString();
                 this.txtT1.Text = task.t1.ToString();
@@ -1061,7 +1076,7 @@ namespace View.Forms
         {
             if (lstTasks.SelectedIndex >= 0)
             {
-                Task t = LoadTaskInfo(true);
+                TaskDescription t = LoadTaskInfo(true);
                 this.view.taskCollection[lstTasks.SelectedIndex] = t;
                 this.view.SaveTaskCollection(this.view.taskCollection);
             }
@@ -1146,6 +1161,7 @@ namespace View.Forms
             }
             comboDeepness.SelectedIndex = 0;
         }
+
         private string aproxLine = "aprox";
 
         private void btnAprox_Click(object sender, EventArgs e)
@@ -1184,13 +1200,11 @@ namespace View.Forms
             }
         }
 
-
-
         private void btnTransfer_Click(object sender, EventArgs e)
         {
             this.isReal = true;
             this.view.Output.ClearScreen();
-            this.dgvTabRes.DataSource = null;
+            this.grcTabRes.DataSource = null;
             this.n = int.Parse(this.txtN.Text);
             this.setCount = this.rbN1.Checked ? 1 : 2;
 
@@ -1234,6 +1248,11 @@ namespace View.Forms
 
         private void btnGenerateStartParam_Click(object sender, EventArgs e)
         {
+            GenerateStartParam();
+        }
+
+        private void GenerateStartParam()
+        {
             this.randomStartParameters = this.GetRandomStartParam();
             StringBuilder sb = new StringBuilder();
             this.view.Output.WriteLine("RandomStartParam generated :");
@@ -1267,11 +1286,50 @@ namespace View.Forms
 
         private void btnSolveRAlg3_Click(object sender, EventArgs e)
         {
-
             double alpha;
             if (double.TryParse(this.txtAlpha.Text, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out alpha))
             {
-                Thread th = new Thread(new ParameterizedThreadStart(this.SolveRalg3))
+                Thread th = new Thread(x =>
+                {
+                    try
+                    {
+                        this.view.Output.WriteLine("SolveRalg3 started at " + DateTime.Now.ToString());
+
+                        if (this.randomStartParameters == null)
+                        {
+                            GenerateStartParam();
+                        }
+
+                        double a = (double)alpha;
+
+                        this.SetControlProperty(this.btnSolveRAlg3, "enabled", false);
+
+                        int tick = Environment.TickCount;
+                        this.inf3 = null;
+                        List<List<double>> sp = this.randomStartParameters;
+
+                        RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 1);
+                        ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
+                        ra.alpha = a;
+                        ra.R_Algorithm();
+
+                        double functional;
+                        this.DrawRes(res, ra, this.curveName3, this.curveNameSuff, Color.DeepPink, this.view.Output, 2, out functional);
+
+                        this.ra3 = ra;
+                        double t = ((Environment.TickCount - tick) / (double)1000);
+                        this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                        this.inf3 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                    }
+                    catch (ApplicationException ae)
+                    {
+                        MessageBox.Show(ae.Message);
+                    }
+                    finally
+                    {
+                        this.SetControlProperty(this.btnSolveRAlg3, "enabled", true);
+                    }
+                })
             {
                 Name = "MainForm.RAlgSolve3",
                 IsBackground = true
@@ -1282,52 +1340,29 @@ namespace View.Forms
             {
                 MessageBox.Show("Error while parsing alpha");
             }
-
         }
 
-        public void SolveRalg3(object alpha)
+        private void btnSolveAll_Click(object sender, EventArgs e)
         {
-            try
-            {
-                this.view.Output.WriteLine("SolveRalg3 started at " + DateTime.Now.ToString());
 
-                if (this.randomStartParameters == null)
-                {
-                    throw new ApplicationException("Generate start parameters");
-                }
-
-                double a = (double)alpha;
-
-                this.SetControlFeathe(this.btnSolveRAlg3, "enabled", false);
-
-                int tick = Environment.TickCount;
-                this.inf3 = null;
-                List<List<double>> sp = this.randomStartParameters;
-
-                RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 1);
-                ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
-                ra.alpha = a;
-                ra.R_Algorithm();
-
-                double functional;
-                this.DrawRes(ra, this.curveName3, this.curveNameSuff, Color.DeepPink, this.view.Output, 2, out functional);
-
-                this.ra3 = ra;
-                double t = ((Environment.TickCount - tick) / (double)1000);
-                this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                this.inf3 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-            }
-            catch (ApplicationException ae)
-            {
-                MessageBox.Show(ae.Message);
-            }
-            finally
-            {
-                this.SetControlFeathe(this.btnSolveRAlg3, "enabled", true);
-            }
         }
 
+        private void speStep_EditValueChanged(object sender, EventArgs e)
+        {
+            step = Convert.ToInt32(speStep.EditValue);
+        }
+
+        private void grvTabRes_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+        {
+            if(e.Column.FieldName == "M1" || e.Column.FieldName =="M2")
+            {
+                int v = Convert.ToInt32(e.CellValue);
+                if(v<=0)
+                {
+                    e.DisplayText ="";
+                }
+            }
+        }
 
     }
-
 }

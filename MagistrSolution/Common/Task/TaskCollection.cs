@@ -5,15 +5,15 @@ using System.Text;
 
 using System.Runtime.Serialization;
 
-namespace Common
+namespace Common.Task
 {
     [DataContract]
-    public class TaskCollection : IEnumerable<Task>
+    public class TaskCollection : IEnumerable<TaskDescription>
     {
         [DataMember]
-        private List<Task> tasks = new List<Task>();
+        private List<TaskDescription> tasks = new List<TaskDescription>();
 
-        public IEnumerator<Task> GetEnumerator()
+        public IEnumerator<TaskDescription> GetEnumerator()
         {
             return tasks.GetEnumerator();
         }
@@ -23,12 +23,12 @@ namespace Common
             return tasks.GetEnumerator();
         }
 
-        public void Add(Task t)
+        public void Add(TaskDescription t)
         {
             this.tasks.Add(t);
         }
 
-        public void Remove(Task t)
+        public void Remove(TaskDescription t)
         {
             this.tasks.Remove(t);
         }
@@ -38,7 +38,7 @@ namespace Common
             this.tasks.RemoveAt(i);
         }
 
-        public Task this[int i]
+        public TaskDescription this[int i]
         {
             get 
             {

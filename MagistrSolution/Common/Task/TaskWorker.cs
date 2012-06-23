@@ -5,8 +5,9 @@ using System.Text;
 
 using System.Reflection;
 using Common.Mathematic;
+using Common.Task;
 
-namespace Common
+namespace Common.Task
 {
     public sealed class TaskWorker : IFunctionExecuter
     {

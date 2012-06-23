@@ -10,10 +10,11 @@ using View.Forms;
 using Common.Mathematic;
 using ZedGraph;
 using System.IO;
+using Common.Task;
 
 namespace View
 {
-    public class View : IView
+    public sealed class View : IView
     {
         public TaskCollection taskCollection;
         private string tasksFileName = "tasks.txt";
@@ -78,15 +79,15 @@ namespace View
 
         public void ViewActionCall(ViewEventType type, params object[] p)
         {
-            if (this.ViewAction != null)
+            if (this.OnViewAction != null)
             {
-                this.ViewAction(type, new ViewEventArgs(p));
+                this.OnViewAction(type, new ViewEventArgs(p));
             }
         }
 
         #region IView Members
 
-        public event Func<ViewEventType, ViewEventArgs, object> ViewAction;
+        public event Func<ViewEventType, ViewEventArgs, object> OnViewAction;
 
 
         public void ShowMainForm()

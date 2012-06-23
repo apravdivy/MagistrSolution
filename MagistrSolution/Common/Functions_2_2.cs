@@ -5,6 +5,7 @@ using System.Text;
 
 using Common.Mathematic;
 using System.Reflection;
+using Common.Task;
 
 namespace Common
 {
