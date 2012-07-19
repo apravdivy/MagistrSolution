@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.txtT0 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -59,12 +59,12 @@
             this.txtN1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDo = new System.Windows.Forms.Button();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -105,7 +105,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.chart1);
+            this.splitContainer1.Panel2.Controls.Add(this.chart);
             this.splitContainer1.Size = new System.Drawing.Size(850, 612);
             this.splitContainer1.SplitterDistance = 190;
             this.splitContainer1.TabIndex = 0;
@@ -116,7 +116,7 @@
             this.txtT0.Name = "txtT0";
             this.txtT0.Size = new System.Drawing.Size(100, 20);
             this.txtT0.TabIndex = 53;
-            this.txtT0.Text = "16";
+            this.txtT0.Text = "10";
             // 
             // label14
             // 
@@ -133,7 +133,7 @@
             this.txtTr.Name = "txtTr";
             this.txtTr.Size = new System.Drawing.Size(100, 20);
             this.txtTr.TabIndex = 51;
-            this.txtTr.Text = "40";
+            this.txtTr.Text = "50";
             // 
             // label11
             // 
@@ -150,16 +150,16 @@
             this.txtT1.Name = "txtT1";
             this.txtT1.Size = new System.Drawing.Size(100, 20);
             this.txtT1.TabIndex = 49;
-            this.txtT1.Text = "80";
+            this.txtT1.Text = "100";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(14, 344);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(20, 13);
+            this.label12.Size = new System.Drawing.Size(16, 13);
             this.label12.TabIndex = 48;
-            this.label12.Text = "T1";
+            this.label12.Text = "Tl";
             // 
             // txtC2
             // 
@@ -167,7 +167,7 @@
             this.txtC2.Name = "txtC2";
             this.txtC2.Size = new System.Drawing.Size(100, 20);
             this.txtC2.TabIndex = 47;
-            this.txtC2.Text = "9";
+            this.txtC2.Text = "381";
             // 
             // label10
             // 
@@ -180,16 +180,16 @@
             // 
             // txtC1
             // 
-            this.txtC1.Location = new System.Drawing.Point(72, 277);
+            this.txtC1.Location = new System.Drawing.Point(72, 199);
             this.txtC1.Name = "txtC1";
             this.txtC1.Size = new System.Drawing.Size(100, 20);
             this.txtC1.TabIndex = 45;
-            this.txtC1.Text = "3";
+            this.txtC1.Text = "460";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 280);
+            this.label9.Location = new System.Drawing.Point(14, 202);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(19, 13);
             this.label9.TabIndex = 44;
@@ -197,16 +197,16 @@
             // 
             // txtRo2
             // 
-            this.txtRo2.Location = new System.Drawing.Point(72, 237);
+            this.txtRo2.Location = new System.Drawing.Point(72, 277);
             this.txtRo2.Name = "txtRo2";
             this.txtRo2.Size = new System.Drawing.Size(100, 20);
             this.txtRo2.TabIndex = 43;
-            this.txtRo2.Text = "4";
+            this.txtRo2.Text = "8800";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 240);
+            this.label8.Location = new System.Drawing.Point(14, 280);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(22, 13);
             this.label8.TabIndex = 42;
@@ -214,16 +214,16 @@
             // 
             // txtRo1
             // 
-            this.txtRo1.Location = new System.Drawing.Point(72, 211);
+            this.txtRo1.Location = new System.Drawing.Point(72, 173);
             this.txtRo1.Name = "txtRo1";
             this.txtRo1.Size = new System.Drawing.Size(100, 20);
             this.txtRo1.TabIndex = 41;
-            this.txtRo1.Text = "1,6";
+            this.txtRo1.Text = "7800";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 214);
+            this.label7.Location = new System.Drawing.Point(14, 176);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(22, 13);
             this.label7.TabIndex = 40;
@@ -231,16 +231,16 @@
             // 
             // txtLambda2
             // 
-            this.txtLambda2.Location = new System.Drawing.Point(72, 173);
+            this.txtLambda2.Location = new System.Drawing.Point(72, 251);
             this.txtLambda2.Name = "txtLambda2";
             this.txtLambda2.Size = new System.Drawing.Size(100, 20);
             this.txtLambda2.TabIndex = 39;
-            this.txtLambda2.Text = "1,4";
+            this.txtLambda2.Text = "384";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 176);
+            this.label6.Location = new System.Drawing.Point(14, 254);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(47, 13);
             this.label6.TabIndex = 38;
@@ -252,7 +252,7 @@
             this.txtLambda1.Name = "txtLambda1";
             this.txtLambda1.Size = new System.Drawing.Size(100, 20);
             this.txtLambda1.TabIndex = 37;
-            this.txtLambda1.Text = "0,5";
+            this.txtLambda1.Text = "46";
             // 
             // label5
             // 
@@ -269,7 +269,7 @@
             this.txtL.Name = "txtL";
             this.txtL.Size = new System.Drawing.Size(100, 20);
             this.txtL.TabIndex = 35;
-            this.txtL.Text = "89";
+            this.txtL.Text = "0,3";
             // 
             // label4
             // 
@@ -286,7 +286,8 @@
             this.txtT_end.Name = "txtT_end";
             this.txtT_end.Size = new System.Drawing.Size(100, 20);
             this.txtT_end.TabIndex = 33;
-            this.txtT_end.Text = "20";
+            this.txtT_end.Text = "30";
+            this.txtT_end.Visible = false;
             // 
             // label3
             // 
@@ -296,6 +297,7 @@
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 32;
             this.label3.Text = "t_end";
+            this.label3.Visible = false;
             // 
             // txtN2
             // 
@@ -303,7 +305,7 @@
             this.txtN2.Name = "txtN2";
             this.txtN2.Size = new System.Drawing.Size(100, 20);
             this.txtN2.TabIndex = 31;
-            this.txtN2.Text = "100";
+            this.txtN2.Text = "40";
             // 
             // label2
             // 
@@ -320,7 +322,7 @@
             this.txtN1.Name = "txtN1";
             this.txtN1.Size = new System.Drawing.Size(100, 20);
             this.txtN1.TabIndex = 29;
-            this.txtN1.Text = "100";
+            this.txtN1.Text = "40";
             // 
             // label1
             // 
@@ -341,22 +343,22 @@
             this.btnDo.UseVisualStyleBackColor = true;
             this.btnDo.Click += new System.EventHandler(this.btnDo_Click);
             // 
-            // chart1
+            // chart
             // 
-            chartArea6.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea6);
-            this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend6.Name = "Legend1";
-            this.chart1.Legends.Add(legend6);
-            this.chart1.Location = new System.Drawing.Point(0, 0);
-            this.chart1.Name = "chart1";
-            series6.ChartArea = "ChartArea1";
-            series6.Legend = "Legend1";
-            series6.Name = "Series1";
-            this.chart1.Series.Add(series6);
-            this.chart1.Size = new System.Drawing.Size(656, 612);
-            this.chart1.TabIndex = 0;
-            this.chart1.Text = "chart1";
+            chartArea1.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea1);
+            this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Name = "Legend1";
+            this.chart.Legends.Add(legend1);
+            this.chart.Location = new System.Drawing.Point(0, 0);
+            this.chart.Name = "chart";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart.Series.Add(series1);
+            this.chart.Size = new System.Drawing.Size(656, 612);
+            this.chart.TabIndex = 0;
+            this.chart.Text = "chart1";
             // 
             // MainForm
             // 
@@ -371,7 +373,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -406,7 +408,7 @@
         private System.Windows.Forms.TextBox txtN1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDo;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
 
     }
 }
