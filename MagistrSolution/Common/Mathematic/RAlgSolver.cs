@@ -498,7 +498,7 @@ namespace Common.Mathematic
                     }
                 }
             }
-            return this.x;
+           
         }
 
         private RAlgSolver(TaskWorker tw, RKResults res, List<List<double>> startParameters)
