@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace View
+﻿namespace View
 {
     //internal enum FormTypeEnum
     //{
@@ -13,7 +8,7 @@ namespace View
 
     //public class FormType
     //{
-        
+
 
     //    public static FormTypeEnum MainForm
     //    {

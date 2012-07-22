@@ -1,46 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using DevExpress.XtraEditors;
 
 namespace View
 {
     public sealed class OutputHelper
     {
-        private MemoEdit memoEdit;
+        private readonly MemoEdit memoEdit;
 
         public OutputHelper(MemoEdit me)
         {
-            this.memoEdit = me;
+            memoEdit = me;
         }
 
         public void WriteLine(string s)
         {
-            if (this.memoEdit.InvokeRequired)
+            if (memoEdit.InvokeRequired)
             {
-                this.memoEdit.BeginInvoke(new Action<string>(this.WriteLine), s);
+                memoEdit.BeginInvoke(new Action<string>(WriteLine), s);
             }
             else
             {
-                this.memoEdit.Text += s + "\r\n";
-                this.memoEdit.Select(this.memoEdit.Text.Length, this.memoEdit.Text.Length);
-                this.memoEdit.ScrollToCaret();
+                memoEdit.Text += s + "\r\n";
+                memoEdit.Select(memoEdit.Text.Length, memoEdit.Text.Length);
+                memoEdit.ScrollToCaret();
             }
         }
 
         public void ClearScreen()
         {
-            if (this.memoEdit.InvokeRequired)
+            if (memoEdit.InvokeRequired)
             {
-                this.memoEdit.BeginInvoke(new Action(this.ClearScreen));
+                memoEdit.BeginInvoke(new Action(ClearScreen));
             }
             else
             {
-                this.memoEdit.Text = string.Empty;
-                this.memoEdit.Select(this.memoEdit.Text.Length, this.memoEdit.Text.Length);
-                this.memoEdit.ScrollToCaret();
+                memoEdit.Text = string.Empty;
+                memoEdit.Select(memoEdit.Text.Length, memoEdit.Text.Length);
+                memoEdit.ScrollToCaret();
             }
         }
     }

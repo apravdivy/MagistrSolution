@@ -1,70 +1,106 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TwoLayerDemo
 {
-    static class Solver
+    internal static class Solver
     {
-        public static void SolveTwoLayer(int N1, int N2, double t_end, double L, double lambda1, double lambda2, double ro1, double ro2, double c1, double c2, double Tl, double T0, double Tr, out double h, out double[] T)
+        public static double[] SolveTwoLayer(int n1, int n2, double tEnd, double thickness, double lambda1, double ro1,
+                                             double c1, double lambda2, double ro2, double c2, double tl, double t0,
+                                             double tr, double h)
         {
-            int N = N1 + N2 + 1;
-            h = L / (N - 1);
-            double a1 = lambda1 / (ro1 * c1);
-            double a2 = lambda2 / (ro2 * c2);
-            double tau = t_end / 100;
+            int n = n1 + n2 + 1;
 
-            T = new double[N];
-            for (int i = 0; i < N; i++)
+            double a1 = lambda1/(ro1*c1);
+            double a2 = lambda2/(ro2*c2);
+            double tau = tEnd/100;
+
+            var T = new double[n];
+            for (int i = 0; i < n; i++)
             {
-                T[i] = T0;
+                T[i] = t0;
             }
             double time = 0;
 
-            double[] alpha = new double[N];
-            double[] beta = new double[N];
-            while (time < t_end)
+            var alpha = new double[n];
+            var beta = new double[n];
+            while (time < tEnd)
             {
                 time += tau;
                 alpha[0] = 0;
-                beta[0] = Tl;
+                beta[0] = tl;
 
-                for (int i = 1; i < N1; i++)
+                for (int i = 1; i < n1; i++)
                 {
                     double ai, bi, ci, fi;
-                    ai = lambda1 / (h * h);
-                    bi = 2 * lambda1 / (h * h) + ro1 * c1 / tau;
-                    ci = lambda1 / (h * h);
-                    fi = -ro1 * c1 * T[i] / tau;
+                    ai = lambda1/(h*h);
+                    bi = 2*lambda1/(h*h) + ro1*c1/tau;
+                    ci = lambda1/(h*h);
+                    fi = -ro1*c1*T[i]/tau;
 
-                    alpha[i] = ai / (bi - ci * alpha[i - 1]);
-                    beta[i] = (ci * beta[i - 1] - fi) / (bi - ci * alpha[i - 1]);
+                    alpha[i] = ai/(bi - ci*alpha[i - 1]);
+                    beta[i] = (ci*beta[i - 1] - fi)/(bi - ci*alpha[i - 1]);
                 }
-                alpha[N1] = 2.0 * a1 * a2 * tau * lambda2 / (2 * a1 * a2 * tau * (lambda2 + lambda1 * (1 - alpha[N1 - 1])) + h * h * (a1 * lambda2 + a2 * lambda1));
-                beta[N1] = (2.0 * a1 * a2 * tau * lambda1 * beta[N1 - 1] + (h * h) * (a1 * lambda2 + a2 * lambda1) * T[N1]) / (2 * a1 * a2 * tau * (lambda2 + lambda1 * (1 - alpha[N1 - 1])) + (h * h) * (a1 * lambda2 + a2 * lambda1));
+                alpha[n1] = 2.0*a1*a2*tau*lambda2/
+                            (2*a1*a2*tau*(lambda2 + lambda1*(1 - alpha[n1 - 1])) + h*h*(a1*lambda2 + a2*lambda1));
+                beta[n1] = (2.0*a1*a2*tau*lambda1*beta[n1 - 1] + (h*h)*(a1*lambda2 + a2*lambda1)*T[n1])/
+                           (2*a1*a2*tau*(lambda2 + lambda1*(1 - alpha[n1 - 1])) + (h*h)*(a1*lambda2 + a2*lambda1));
 
-                for (int i = N1 + 1; i < N - 1; i++)
+                for (int i = n1 + 1; i < n - 1; i++)
                 {
                     double ai, bi, ci, fi;
-                    ai = lambda2 / (h * h);
-                    bi = 2.0 * lambda2 / (h * h) + ro2 * c2 / tau;
-                    ci = lambda2 / (h * h);
-                    fi = -ro2 * c2 * T[i] / tau;
+                    ai = lambda2/(h*h);
+                    bi = 2.0*lambda2/(h*h) + ro2*c2/tau;
+                    ci = lambda2/(h*h);
+                    fi = -ro2*c2*T[i]/tau;
 
-                    alpha[i] = ai / (bi - ci * alpha[i - 1]);
-                    beta[i] = (ci * beta[i - 1] - fi) / (bi - ci * alpha[i - 1]);
+                    alpha[i] = ai/(bi - ci*alpha[i - 1]);
+                    beta[i] = (ci*beta[i - 1] - fi)/(bi - ci*alpha[i - 1]);
                 }
 
-                T[N - 1] = Tr;
+                T[n - 1] = tr;
 
-                for (int i = N - 2; i >= 0; i--)
+                for (int i = n - 2; i >= 0; i--)
                 {
-                    T[i] = alpha[i] * T[i + 1] + beta[i];
+                    T[i] = alpha[i]*T[i + 1] + beta[i];
                 }
-
-
             }
+            return T;
+        }
+
+        public static double SolveMin(double a, double b, Func<double, double> f, double? eps = null)
+        {
+            if (eps == null)
+            {
+                eps = 0.001;
+            }
+            double fi = (1 + Math.Pow(5, 0.5))/2.0;
+
+            double x1 = b - (b - a)/fi;
+            double x2 = a + (b - a)/fi;
+
+            double y1 = f(x1);
+            double y2 = f(x2);
+
+            while (Math.Abs(b - a) > eps)
+            {
+                if (y1 >= y2)
+                {
+                    a = x1;
+                    x1 = x2;
+                    y1 = y2;
+                    x2 = b - (x1 - a);
+                    y2 = f(x2);
+                }
+                else
+                {
+                    b = x2;
+                    x2 = x1;
+                    y2 = y1;
+                    x1 = a + (b - x2);
+                    y1 = f(x1);
+                }
+            }
+            return (a + b)/2;
         }
     }
 }

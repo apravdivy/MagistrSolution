@@ -20,168 +20,226 @@
 #region Using directives
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion
 
 namespace ZedGraph
 {
-	/// <summary>
-	/// A class that captures an <see cref="Axis"/> scale range.
-	/// </summary>
-	/// <remarks>This structure is used by the <see cref="ZoomState"/> class to store
-	/// <see cref="Axis"/> scale range settings in a collection for later retrieval.
-	/// The class stores the <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
-	/// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/> properties, along with
-	/// the corresponding auto-scale settings: <see cref="Scale.MinAuto"/>,
-	/// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
-	/// and <see cref="Scale.MajorStepAuto"/>.</remarks>
-	/// <author> John Champion </author>
-	/// <version> $Revision: 3.1 $ $Date: 2006/06/24 20:26:44 $ </version>
-	public class ScaleState : ICloneable
-	{
-		/// <summary>
-		/// The axis range data for <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
-		/// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/>
-		/// </summary>
-		private double _min, _minorStep, _majorStep, _max;
-		/// <summary>
-		/// The status of <see cref="Scale.MinAuto"/>,
-		/// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
-		/// and <see cref="Scale.MajorStepAuto"/>
-		/// </summary>
-		private bool _minAuto, _minorStepAuto,
-							_majorStepAuto, _maxAuto,
-							_formatAuto, _magAuto;
+    /// <summary>
+    /// A class that captures an <see cref="Axis"/> scale range.
+    /// </summary>
+    /// <remarks>This structure is used by the <see cref="ZoomState"/> class to store
+    /// <see cref="Axis"/> scale range settings in a collection for later retrieval.
+    /// The class stores the <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
+    /// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/> properties, along with
+    /// the corresponding auto-scale settings: <see cref="Scale.MinAuto"/>,
+    /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+    /// and <see cref="Scale.MajorStepAuto"/>.</remarks>
+    /// <author> John Champion </author>
+    /// <version> $Revision: 3.1 $ $Date: 2006/06/24 20:26:44 $ </version>
+    public class ScaleState : ICloneable
+    {
+        private readonly string _format;
 
-		/// <summary>
-		/// The status of <see cref="Scale.MajorUnit"/> and <see cref="Scale.MinorUnit"/>
-		/// </summary>
-		private DateUnit _minorUnit, _majorUnit;
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _formatAuto;
 
-		private string _format;
-		private int _mag;
+        private readonly int _mag;
 
-		/// <summary>
-		/// Construct a <see cref="ScaleState"/> from the specified <see cref="Axis"/>
-		/// </summary>
-		/// <param name="axis">The <see cref="Axis"/> from which to collect the scale
-		/// range settings.</param>
-		public ScaleState( Axis axis )
-		{
-			_min = axis._scale._min;
-			_minorStep = axis._scale._minorStep;
-			_majorStep = axis._scale._majorStep;
-			_max = axis._scale._max;
-			_majorUnit = axis._scale._majorUnit;
-			_minorUnit = axis._scale._minorUnit;
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _magAuto;
 
-			_format = axis._scale._format;
-			_mag = axis._scale._mag;
-			//this.numDec = axis.NumDec;
+        /// <summary>
+        /// The axis range data for <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
+        /// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/>
+        /// </summary>
+        private readonly double _majorStep;
 
-			_minAuto = axis._scale._minAuto;
-			_majorStepAuto = axis._scale._majorStepAuto;
-			_minorStepAuto = axis._scale._minorStepAuto;
-			_maxAuto = axis._scale._maxAuto;
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _majorStepAuto;
 
-			_formatAuto = axis._scale._formatAuto;
-			_magAuto = axis._scale._magAuto;
-		}
+        /// <summary>
+        /// The status of <see cref="Scale.MajorUnit"/> and <see cref="Scale.MinorUnit"/>
+        /// </summary>
+        private readonly DateUnit _majorUnit;
 
-		/// <summary>
-		/// The Copy Constructor
-		/// </summary>
-		/// <param name="rhs">The <see cref="ScaleState"/> object from which to copy</param>
-		public ScaleState( ScaleState rhs )
-		{
-			_min = rhs._min;
-			_majorStep = rhs._majorStep;
-			_minorStep = rhs._minorStep;
-			_max = rhs._max;
-			_majorUnit = rhs._majorUnit;
-			_minorUnit = rhs._minorUnit;
+        /// <summary>
+        /// The axis range data for <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
+        /// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/>
+        /// </summary>
+        private readonly double _max;
 
-			_format = rhs._format;
-			_mag = rhs._mag;
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _maxAuto;
 
-			_minAuto = rhs._minAuto;
-			_majorStepAuto = rhs._majorStepAuto;
-			_minorStepAuto = rhs._minorStepAuto;
-			_maxAuto = rhs._maxAuto;
+        /// <summary>
+        /// The axis range data for <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
+        /// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/>
+        /// </summary>
+        private readonly double _min;
 
-			_formatAuto = rhs._formatAuto;
-			_magAuto = rhs._magAuto;
-		}
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _minAuto;
 
-		/// <summary>
-		/// Implement the <see cref="ICloneable" /> interface in a typesafe manner by just
-		/// calling the typed version of <see cref="Clone" />
-		/// </summary>
-		/// <returns>A deep copy of this object</returns>
-		object ICloneable.Clone()
-		{
-			return this.Clone();
-		}
+        /// <summary>
+        /// The axis range data for <see cref="Scale.Min"/>, <see cref="Scale.Max"/>,
+        /// <see cref="Scale.MinorStep"/>, and <see cref="Scale.MajorStep"/>
+        /// </summary>
+        private readonly double _minorStep;
 
-		/// <summary>
-		/// Typesafe, deep-copy clone method.
-		/// </summary>
-		/// <returns>A new, independent copy of this class</returns>
-		public ScaleState Clone()
-		{
-			return new ScaleState( this );
-		}
+        /// <summary>
+        /// The status of <see cref="Scale.MinAuto"/>,
+        /// <see cref="Scale.MaxAuto"/>, <see cref="Scale.MinorStepAuto"/>,
+        /// and <see cref="Scale.MajorStepAuto"/>
+        /// </summary>
+        private readonly bool _minorStepAuto;
 
-		/// <summary>
-		/// Copy the properties from this <see cref="ScaleState"/> out to the specified <see cref="Axis"/>.
-		/// </summary>
-		/// <param name="axis">The <see cref="Axis"/> reference to which the properties should be
-		/// copied</param>
-		public void ApplyScale( Axis axis )
-		{
-			axis._scale._min = _min;
-			axis._scale._majorStep = _majorStep;
-			axis._scale._minorStep = _minorStep;
-			axis._scale._max = _max;
-			axis._scale._majorUnit = _majorUnit;
-			axis._scale._minorUnit = _minorUnit;
+        /// <summary>
+        /// The status of <see cref="Scale.MajorUnit"/> and <see cref="Scale.MinorUnit"/>
+        /// </summary>
+        private readonly DateUnit _minorUnit;
 
-			axis._scale._format = _format;
-			axis._scale._mag = _mag;
+        /// <summary>
+        /// Construct a <see cref="ScaleState"/> from the specified <see cref="Axis"/>
+        /// </summary>
+        /// <param name="axis">The <see cref="Axis"/> from which to collect the scale
+        /// range settings.</param>
+        public ScaleState(Axis axis)
+        {
+            _min = axis._scale._min;
+            _minorStep = axis._scale._minorStep;
+            _majorStep = axis._scale._majorStep;
+            _max = axis._scale._max;
+            _majorUnit = axis._scale._majorUnit;
+            _minorUnit = axis._scale._minorUnit;
 
-			// The auto settings must be made after the min/step/max settings, since setting those
-			// properties actually affects the auto settings.
-			axis._scale._minAuto = _minAuto;
-			axis._scale._minorStepAuto = _minorStepAuto;
-			axis._scale._majorStepAuto = _majorStepAuto;
-			axis._scale._maxAuto = _maxAuto;
+            _format = axis._scale._format;
+            _mag = axis._scale._mag;
+            //this.numDec = axis.NumDec;
 
-			axis._scale._formatAuto = _formatAuto;
-			axis._scale._magAuto = _magAuto;
+            _minAuto = axis._scale._minAuto;
+            _majorStepAuto = axis._scale._majorStepAuto;
+            _minorStepAuto = axis._scale._minorStepAuto;
+            _maxAuto = axis._scale._maxAuto;
 
-		}
+            _formatAuto = axis._scale._formatAuto;
+            _magAuto = axis._scale._magAuto;
+        }
 
-		/// <summary>
-		/// Determine if the state contained in this <see cref="ScaleState"/> object is different from
-		/// the state of the specified <see cref="Axis"/>.
-		/// </summary>
-		/// <param name="axis">The <see cref="Axis"/> object with which to compare states.</param>
-		/// <returns>true if the states are different, false otherwise</returns>
-		public bool IsChanged( Axis axis )
-		{
-			return axis._scale._min != _min ||
-					axis._scale._majorStep != _majorStep ||
-					axis._scale._minorStep != _minorStep ||
-					axis._scale._max != _max ||
-					axis._scale._minorUnit != _minorUnit ||
-					axis._scale._majorUnit != _majorUnit ||
-					axis._scale._minAuto != _minAuto ||
-					axis._scale._minorStepAuto != _minorStepAuto ||
-					axis._scale._majorStepAuto != _majorStepAuto ||
-					axis._scale._maxAuto != _maxAuto;
-		}
+        /// <summary>
+        /// The Copy Constructor
+        /// </summary>
+        /// <param name="rhs">The <see cref="ScaleState"/> object from which to copy</param>
+        public ScaleState(ScaleState rhs)
+        {
+            _min = rhs._min;
+            _majorStep = rhs._majorStep;
+            _minorStep = rhs._minorStep;
+            _max = rhs._max;
+            _majorUnit = rhs._majorUnit;
+            _minorUnit = rhs._minorUnit;
 
-	}
+            _format = rhs._format;
+            _mag = rhs._mag;
+
+            _minAuto = rhs._minAuto;
+            _majorStepAuto = rhs._majorStepAuto;
+            _minorStepAuto = rhs._minorStepAuto;
+            _maxAuto = rhs._maxAuto;
+
+            _formatAuto = rhs._formatAuto;
+            _magAuto = rhs._magAuto;
+        }
+
+        #region ICloneable Members
+
+        /// <summary>
+        /// Implement the <see cref="ICloneable" /> interface in a typesafe manner by just
+        /// calling the typed version of <see cref="Clone" />
+        /// </summary>
+        /// <returns>A deep copy of this object</returns>
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Typesafe, deep-copy clone method.
+        /// </summary>
+        /// <returns>A new, independent copy of this class</returns>
+        public ScaleState Clone()
+        {
+            return new ScaleState(this);
+        }
+
+        /// <summary>
+        /// Copy the properties from this <see cref="ScaleState"/> out to the specified <see cref="Axis"/>.
+        /// </summary>
+        /// <param name="axis">The <see cref="Axis"/> reference to which the properties should be
+        /// copied</param>
+        public void ApplyScale(Axis axis)
+        {
+            axis._scale._min = _min;
+            axis._scale._majorStep = _majorStep;
+            axis._scale._minorStep = _minorStep;
+            axis._scale._max = _max;
+            axis._scale._majorUnit = _majorUnit;
+            axis._scale._minorUnit = _minorUnit;
+
+            axis._scale._format = _format;
+            axis._scale._mag = _mag;
+
+            // The auto settings must be made after the min/step/max settings, since setting those
+            // properties actually affects the auto settings.
+            axis._scale._minAuto = _minAuto;
+            axis._scale._minorStepAuto = _minorStepAuto;
+            axis._scale._majorStepAuto = _majorStepAuto;
+            axis._scale._maxAuto = _maxAuto;
+
+            axis._scale._formatAuto = _formatAuto;
+            axis._scale._magAuto = _magAuto;
+        }
+
+        /// <summary>
+        /// Determine if the state contained in this <see cref="ScaleState"/> object is different from
+        /// the state of the specified <see cref="Axis"/>.
+        /// </summary>
+        /// <param name="axis">The <see cref="Axis"/> object with which to compare states.</param>
+        /// <returns>true if the states are different, false otherwise</returns>
+        public bool IsChanged(Axis axis)
+        {
+            return axis._scale._min != _min ||
+                   axis._scale._majorStep != _majorStep ||
+                   axis._scale._minorStep != _minorStep ||
+                   axis._scale._max != _max ||
+                   axis._scale._minorUnit != _minorUnit ||
+                   axis._scale._majorUnit != _majorUnit ||
+                   axis._scale._minAuto != _minAuto ||
+                   axis._scale._minorStepAuto != _minorStepAuto ||
+                   axis._scale._majorStepAuto != _majorStepAuto ||
+                   axis._scale._maxAuto != _maxAuto;
+        }
+    }
 }

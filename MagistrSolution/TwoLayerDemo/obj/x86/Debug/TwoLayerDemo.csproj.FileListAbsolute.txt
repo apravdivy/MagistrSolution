@@ -6,3 +6,4 @@ G:\!JIT\MagistrSolution\MagistrSolution\TwoLayerDemo\obj\x86\Debug\TwoLayerDemo.
 G:\!JIT\MagistrSolution\MagistrSolution\TwoLayerDemo\obj\x86\Debug\TwoLayerDemo.csproj.GenerateResource.Cache
 G:\!JIT\MagistrSolution\MagistrSolution\TwoLayerDemo\obj\x86\Debug\TwoLayerDemo.exe
 G:\!JIT\MagistrSolution\MagistrSolution\TwoLayerDemo\obj\x86\Debug\TwoLayerDemo.pdb
+G:\!JIT\MagistrSolution\MagistrSolution\TwoLayerDemo\bin\Debug\TwoLayerDemo.exe.config

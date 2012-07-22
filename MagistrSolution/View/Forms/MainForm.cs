@@ -3,33 +3,62 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
-using Common;
-using ZedGraph;
-using System.Threading;
-using System.Configuration;
-using System.IO;
-using Common.Mathematic;
 using System.Reflection;
-using DevExpress.XtraEditors.Controls;
-using SmartXLS;
-using Common.Wawe;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Common;
+using Common.Mathematic;
 using Common.Task;
+using Common.Wawe;
+using Core;
+using DevExpress.XtraGrid.Views.Base;
+using SmartXLS;
+using ZedGraph;
 
 namespace View.Forms
 {
     public partial class MainForm : Form
     {
-        public View view;
-
+        private readonly Dictionary<string, PointPairList> KursCurves = new Dictionary<string, PointPairList>();
+        private readonly Dictionary<string, PointPairList> curves1 = new Dictionary<string, PointPairList>();
+        private readonly Dictionary<string, PointPairList> curves2 = new Dictionary<string, PointPairList>();
+        private readonly Dictionary<string, string> fnames = new Dictionary<string, string>();
+        private readonly Dictionary<string, int> pCountList = new Dictionary<string, int>();
+        private List<double> ASignal = new List<double>();
+        private string aproxLine = "aprox";
+        public string curveName = "line";
+        public string curveName1 = "line1";
+        public string curveName2 = "line2";
+        public string curveName3 = "line3";
+        public string curveNameSuff = "_1";
         public Dictionary<string, PointPairList> curves = new Dictionary<string, PointPairList>();
-        private Dictionary<string, PointPairList> curves1 = new Dictionary<string, PointPairList>();
-        private Dictionary<string, PointPairList> curves2 = new Dictionary<string, PointPairList>();
+        public CultureInfo enUsCulture = new CultureInfo("en-US");
+        private Functions_2_2 funcDescr;
+        private string inf1;
+        private string inf2;
+        private string inf3;
+        private bool isReal;
+        private int n;
 
-        private Dictionary<string, List<ResPointViewType2>> r = null;
+        private Dictionary<string, List<ResPointViewType2>> r;
+        private RAlgSolver ra1;
+        private RAlgSolver ra2;
+        private RAlgSolver ra3;
+        private List<List<double>> randomStartParameters;
+        private RKResults res;
+        private MainFuncSetCount selectedMainFuncSetCount;
+        private SecondFuncType selectedSecondFuncType;
+        public int setCount;
+        private Vector startVector;
+        private int step;
+        private object tblResList;
+        private TaskParameters tps;
+        private TaskWorker tw;
+        public View view;
 
         public MainForm(View view)
         {
@@ -39,83 +68,87 @@ namespace View.Forms
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.view.ViewActionCall(ViewEventType.Exit);
+            view.ViewActionCall(ViewEventType.Exit);
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.view.ViewActionCall(ViewEventType.Exit);
+            view.ViewActionCall(ViewEventType.Exit);
         }
 
         private void btnGo1_Click(object sender, EventArgs e)
         {
-            this.btnUpdate_Click(null, null);
-            this.view.ConfigGraphPane(this.zgc1, this, PaneLayout.SingleRow, new List<Core.ChartInfo>(){
-                new Core.ChartInfo()
-                { Title= "Depends t with z",XAxisTitle= "t",YAxisTitle= "z"}});
-            ZedGraph.GraphPane gp = this.zgc1.MasterPane[0];
+            btnUpdate_Click(null, null);
+            view.ConfigGraphPane(zgc1, this, PaneLayout.SingleRow, new List<ChartInfo>
+                                                                       {
+                                                                           new ChartInfo
+                                                                               {
+                                                                                   Title = "Depends t with z",
+                                                                                   XAxisTitle = "t",
+                                                                                   YAxisTitle = "z"
+                                                                               }
+                                                                       });
+            GraphPane gp = zgc1.MasterPane[0];
             gp.CurveList.Clear();
 
             string fname = listFunctions1.SelectedItem.ToString();
             int randn = int.Parse(txtRandomCount.Text);
-            this.curves.Clear();
-            Random r = new Random();
+            curves.Clear();
+            var r = new Random();
             for (int i = 0; i < randn; i++)
             {
                 string curveName = string.Format("curve{0}", i);
-                this.curves.Add(curveName, new PointPairList());
-                Color c = Color.Black;//Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
-                gp.AddCurve(curveName, this.curves[curveName], c, SymbolType.None);
-                this.view.ViewActionCall(ViewEventType.StartSolving1, fname, curveName);
+                curves.Add(curveName, new PointPairList());
+                Color c = Color.Black; //Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
+                gp.AddCurve(curveName, curves[curveName], c, SymbolType.None);
+                view.ViewActionCall(ViewEventType.StartSolving1, fname, curveName);
             }
         }
 
         private void btnGo2_Click(object sender, EventArgs e)
         {
-            this.btnUpdate_Click(null, null);
+            btnUpdate_Click(null, null);
 
-            List<Core.ChartInfo> chInfo = new List<Core.ChartInfo>();
-            chInfo.Add(new Core.ChartInfo() { Title = "Depends (t,z1)", XAxisTitle = "t", YAxisTitle = "z1" });
-            chInfo.Add(new Core.ChartInfo() { Title = "Depends (t,z2)", XAxisTitle = "t", YAxisTitle = "z2" });
-            chInfo.Add(new Core.ChartInfo() { Title = "Depends (z1,z2)", XAxisTitle = "z1", YAxisTitle = "z2" });
+            var chInfo = new List<ChartInfo>();
+            chInfo.Add(new ChartInfo {Title = "Depends (t,z1)", XAxisTitle = "t", YAxisTitle = "z1"});
+            chInfo.Add(new ChartInfo {Title = "Depends (t,z2)", XAxisTitle = "t", YAxisTitle = "z2"});
+            chInfo.Add(new ChartInfo {Title = "Depends (z1,z2)", XAxisTitle = "z1", YAxisTitle = "z2"});
 
-            this.view.ConfigGraphPane(this.zgc1, this, PaneLayout.ExplicitCol21, chInfo);
+            view.ConfigGraphPane(zgc1, this, PaneLayout.ExplicitCol21, chInfo);
 
-            ZedGraph.GraphPane gp = this.zgc1.MasterPane[0];
-            ZedGraph.GraphPane gp1 = this.zgc1.MasterPane[1];
-            ZedGraph.GraphPane gp2 = this.zgc1.MasterPane[2];
+            GraphPane gp = zgc1.MasterPane[0];
+            GraphPane gp1 = zgc1.MasterPane[1];
+            GraphPane gp2 = zgc1.MasterPane[2];
             gp.CurveList.Clear();
             gp1.CurveList.Clear();
             gp2.CurveList.Clear();
 
             string fname = listFunctions2.SelectedItem.ToString();
             int randonCount = int.Parse(txtRandomCount.Text);
-            this.curves.Clear();
-            this.curves1.Clear();
-            this.curves2.Clear();
+            curves.Clear();
+            curves1.Clear();
+            curves2.Clear();
             //Random r = new Random();
-            string[,] ss = new string[randonCount, randonCount];
+            var ss = new string[randonCount,randonCount];
             for (int i = 0; i < randonCount; i++)
             {
                 for (int j = 0; j < randonCount; j++)
                 {
                     string curveName = string.Format("curve_{0}_{1}", i, j);
-                    this.curves.Add(curveName, new PointPairList());
-                    this.curves1.Add(curveName, new PointPairList());
-                    this.curves2.Add(curveName, new PointPairList());
+                    curves.Add(curveName, new PointPairList());
+                    curves1.Add(curveName, new PointPairList());
+                    curves2.Add(curveName, new PointPairList());
 
-                    Color c = Color.Black;//Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
+                    Color c = Color.Black; //Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
 
-                    gp.AddCurve(curveName, this.curves[curveName], c, SymbolType.None);
-                    gp1.AddCurve(curveName, this.curves1[curveName], c, SymbolType.None);
-                    gp2.AddCurve(curveName, this.curves2[curveName], c, SymbolType.None);
+                    gp.AddCurve(curveName, curves[curveName], c, SymbolType.None);
+                    gp1.AddCurve(curveName, curves1[curveName], c, SymbolType.None);
+                    gp2.AddCurve(curveName, curves2[curveName], c, SymbolType.None);
                     ss[i, j] = curveName;
                 }
             }
 
-            this.view.ViewActionCall(ViewEventType.StartSolving2, fname, ss);
-
-
+            view.ViewActionCall(ViewEventType.StartSolving2, fname, ss);
 
 
             //this.tabControl.SelectedIndex = 0;
@@ -136,8 +169,8 @@ namespace View.Forms
 
         public void DrawPoint(double x, List<double> val, string curveName)
         {
-            this.curves[curveName].Add(x, val[0]);
-            this.RefreshaAllCharts(1);
+            curves[curveName].Add(x, val[0]);
+            RefreshaAllCharts(1);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -154,7 +187,7 @@ namespace View.Forms
             }
             else
             {
-                this.btnGo1.Enabled = false;
+                btnGo1.Enabled = false;
             }
             if (listFunctions2.Items.Count > 0)
             {
@@ -162,32 +195,40 @@ namespace View.Forms
             }
             else
             {
-                this.btnGo2.Enabled = false;
+                btnGo2.Enabled = false;
             }
 
-            this.view.UpdateAlgorithmParameters(this.txtT0.Text, this.txtT1.Text, this.txtY0.Text, this.txtY00.Text, txtY01.Text, this.txtN.Text, this.txtRandomCount.Text, this.txtz1min.Text, this.txtz1max.Text, this.txtz2min.Text, this.txtz2max.Text);
+            view.UpdateAlgorithmParameters(txtT0.Text, txtT1.Text, txtY0.Text, txtY00.Text, txtY01.Text, txtN.Text,
+                                           txtRandomCount.Text, txtz1min.Text, txtz1max.Text, txtz2min.Text,
+                                           txtz2max.Text);
 
             //this.view.ConfigGraphPane(this.zgc1.GraphPane, "Depends z1 with t", "t", "z1");
             //this.view.ConfigGraphPane(this.zgc2.GraphPane, "Depends z2 with t", "t", "z2");
             //this.view.ConfigGraphPane(this.zgc3.GraphPane, "Depends z1 with z2", "z1", "z2");
 
-            this.view.ConfigGraphPane(this.zgSolve1, this, PaneLayout.SingleRow, new List<Core.ChartInfo>(){
-                new Core.ChartInfo()
-                { Title= "Depends t with z",XAxisTitle= "t",YAxisTitle= "z"}});
+            view.ConfigGraphPane(zgSolve1, this, PaneLayout.SingleRow, new List<ChartInfo>
+                                                                           {
+                                                                               new ChartInfo
+                                                                                   {
+                                                                                       Title = "Depends t with z",
+                                                                                       XAxisTitle = "t",
+                                                                                       YAxisTitle = "z"
+                                                                                   }
+                                                                           });
 
-            Type type = typeof(Functions_2_2);
+            Type type = typeof (Functions_2_2);
 
             MethodInfo[] methods = type.GetMethods();
             fnames.Clear();
             foreach (MethodInfo m in methods)
             {
-                object[] atr = m.GetCustomAttributes(typeof(FAtrAttribute), false);
+                object[] atr = m.GetCustomAttributes(typeof (FAtrAttribute), false);
                 if (atr != null && atr.Length > 0)
                 {
                     if ((atr[0] as FAtrAttribute).funcType == FuncType.Second)
                     {
                         sfList.Items.Add((atr[0] as FAtrAttribute).funcName);
-                        this.pCountList.Add((atr[0] as FAtrAttribute).funcName.ToUpper(), (atr[0] as FAtrAttribute).PCount);
+                        pCountList.Add((atr[0] as FAtrAttribute).funcName.ToUpper(), (atr[0] as FAtrAttribute).PCount);
                         fnames.Add((atr[0] as FAtrAttribute).funcName.ToUpper(), m.Name);
                     }
                 }
@@ -202,191 +243,188 @@ namespace View.Forms
             mfList.SelectedIndex = 0;
 
             int i = 0;
-            foreach (TaskDescription t in this.view.taskCollection)
+            foreach (TaskDescription t in view.taskCollection)
             {
-                this.lstTasks.Items.Add(t.name);
+                lstTasks.Items.Add(t.name);
                 i++;
             }
-            this.comboDeepness.SelectedIndex = 0;
-            this.comboWaweOrderAprox.SelectedIndex = 0;
+            comboDeepness.SelectedIndex = 0;
+            comboWaweOrderAprox.SelectedIndex = 0;
         }
-        private Dictionary<string, string> fnames = new Dictionary<string, string>();
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            this.view.UpdateAlgorithmParameters(this.txtT0.Text.Replace(',', '.'), this.txtT1.Text.Replace(',', '.'),
-                this.txtY0.Text.Replace(',', '.'),
-                this.txtY00.Text.Replace(',', '.'), txtY01.Text.Replace(',', '.'),
-                this.txtN.Text, this.txtRandomCount.Text,
-                this.txtz1min.Text.Replace(',', '.'), this.txtz1max.Text.Replace(',', '.'),
-                this.txtz2min.Text.Replace(',', '.'), this.txtz2max.Text.Replace(',', '.'));
+            view.UpdateAlgorithmParameters(txtT0.Text.Replace(',', '.'), txtT1.Text.Replace(',', '.'),
+                                           txtY0.Text.Replace(',', '.'),
+                                           txtY00.Text.Replace(',', '.'), txtY01.Text.Replace(',', '.'),
+                                           txtN.Text, txtRandomCount.Text,
+                                           txtz1min.Text.Replace(',', '.'), txtz1max.Text.Replace(',', '.'),
+                                           txtz2min.Text.Replace(',', '.'), txtz2max.Text.Replace(',', '.'));
         }
 
         internal void DrawPoint2(double p, List<double> list, string curveName)
         {
-            this.curves[curveName].Add(p, list[0]);
-            this.curves1[curveName].Add(p, list[1]);
-            this.curves2[curveName].Add(list[0], list[1]);
-            this.RefreshaAllCharts(2);
+            curves[curveName].Add(p, list[0]);
+            curves1[curveName].Add(p, list[1]);
+            curves2[curveName].Add(list[0], list[1]);
+            RefreshaAllCharts(2);
         }
 
 
         private void btnSolvePodhod2_Click(object sender, EventArgs e)
         {
-            this.btnUpdate_Click(null, null);
-            this.listBox1.Items.Clear();
+            btnUpdate_Click(null, null);
+            listBox1.Items.Clear();
 
 
-            ZedGraph.GraphPane gp = this.zgSolve1.GraphPane;
+            GraphPane gp = zgSolve1.GraphPane;
             gp.CurveList.Clear();
-            this.curves.Clear();
+            curves.Clear();
 
             string fname = listFunctions1.SelectedItem.ToString();
 
             string curveName = "Line";
-            this.curves.Add(curveName, new PointPairList());
-            Color c = Color.Black;//Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
-            gp.AddCurve(curveName, this.curves[curveName], c, SymbolType.None);
-            this.view.ViewActionCall(ViewEventType.SolvePodhod2Type1, fname, curveName);
+            curves.Add(curveName, new PointPairList());
+            Color c = Color.Black; //Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
+            gp.AddCurve(curveName, curves[curveName], c, SymbolType.None);
+            view.ViewActionCall(ViewEventType.SolvePodhod2Type1, fname, curveName);
         }
 
-        internal void ShowResultType1(List<double> divT, List<double> divZ, List<ResPointViewType1> list, double t0, double t)
+        internal void ShowResultType1(List<double> divT, List<double> divZ, List<ResPointViewType1> list, double t0,
+                                      double t)
         {
-            this.dgv.DataSource = null;
-            this.dgv.DataSource = list;
+            dgv.DataSource = null;
+            dgv.DataSource = list;
 
             if (divT.Count != divZ.Count)
                 throw new ArgumentException("WTF?");
 
             for (int i = 0; i < divZ.Count; i++)
             {
-                this.zgSolve1.GraphPane.AddCurve(i.ToString(), new PointPairList(), Color.Blue, SymbolType.None);
-                this.zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(t0, divZ[i]);
-                this.zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(t, divZ[i]);
+                zgSolve1.GraphPane.AddCurve(i.ToString(), new PointPairList(), Color.Blue, SymbolType.None);
+                zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(t0, divZ[i]);
+                zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(t, divZ[i]);
             }
 
-            this.zgSolve1.AxisChange();
-            this.zgSolve1.Refresh();
+            zgSolve1.AxisChange();
+            zgSolve1.Refresh();
 
             //MessageBox.Show(string.Format("t={0} : z={1}",divT,divZ));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.btnUpdate_Click(null, null);
-            this.listBox1.Items.Clear();
+            btnUpdate_Click(null, null);
+            listBox1.Items.Clear();
 
 
-            ZedGraph.GraphPane gp = this.zgSolve1.GraphPane;
+            GraphPane gp = zgSolve1.GraphPane;
             gp.CurveList.Clear();
-            this.curves.Clear();
+            curves.Clear();
 
             string fname = listFunctions2.SelectedItem.ToString();
 
             string curveName = "Line2";
-            this.curves.Add(curveName, new PointPairList());
-            Color c = Color.DarkBlue;//Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
-            gp.AddCurve(curveName, this.curves[curveName], c, SymbolType.None);
-            this.view.ViewActionCall(ViewEventType.SolovePodhod2Type2, fname, curveName);
-
+            curves.Add(curveName, new PointPairList());
+            Color c = Color.DarkBlue; //Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
+            gp.AddCurve(curveName, curves[curveName], c, SymbolType.None);
+            view.ViewActionCall(ViewEventType.SolovePodhod2Type2, fname, curveName);
         }
 
         internal void DrawPhasePortret(double p, List<double> list, string curveName)
         {
-            this.curves[curveName].Add(list[0], list[1]);
-            this.zgSolve1.AxisChange();
-            this.zgSolve1.Refresh();
+            curves[curveName].Add(list[0], list[1]);
+            zgSolve1.AxisChange();
+            zgSolve1.Refresh();
         }
 
-        internal void ShowResultType2(List<double> divT, List<double> divZ, List<ResPointViewType2> list, double z2min, double z2max)
+        internal void ShowResultType2(List<double> divT, List<double> divZ, List<ResPointViewType2> list, double z2min,
+                                      double z2max)
         {
-            this.dgv.DataSource = null;
-            this.dgv.DataSource = list;
+            dgv.DataSource = null;
+            dgv.DataSource = list;
 
             if (divT.Count != divZ.Count)
                 throw new ArgumentException("WTF?");
 
             for (int i = 0; i < divZ.Count; i++)
             {
-                this.zgSolve1.GraphPane.AddCurve(i.ToString(), new PointPairList(), Color.Blue, SymbolType.None);
-                this.zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(divZ[i], z2min);
-                this.zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(divZ[i], z2max);
+                zgSolve1.GraphPane.AddCurve(i.ToString(), new PointPairList(), Color.Blue, SymbolType.None);
+                zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(divZ[i], z2min);
+                zgSolve1.GraphPane.CurveList[i.ToString()].AddPoint(divZ[i], z2max);
             }
 
-            this.zgSolve1.AxisChange();
-            this.zgSolve1.Refresh();
-
+            zgSolve1.AxisChange();
+            zgSolve1.Refresh();
         }
 
         private void btnSolvingType2Mass_Click(object sender, EventArgs e)
         {
-            this.btnUpdate_Click(null, null);
-            this.listBox1.Items.Clear();
-            ZedGraph.GraphPane gp = this.zgSolve1.GraphPane;
+            btnUpdate_Click(null, null);
+            listBox1.Items.Clear();
+            GraphPane gp = zgSolve1.GraphPane;
             gp.CurveList.Clear();
-            this.curves.Clear();
+            curves.Clear();
             string fname = listFunctions2.SelectedItem.ToString();
 
-            int randonCount = int.Parse(this.txtRandomCount.Text);
-            string[,] curveNames = new string[randonCount, randonCount];
+            int randonCount = int.Parse(txtRandomCount.Text);
+            var curveNames = new string[randonCount,randonCount];
             for (int i = 0; i < randonCount; i++)
             {
                 for (int j = 0; j < randonCount; j++)
                 {
                     string curveName = string.Format("Line-{0}_{1}", i, j);
-                    this.curves.Add(curveName, new PointPairList());
-                    Color c = Color.DarkBlue;//Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
-                    gp.AddCurve(curveName, this.curves[curveName], c, SymbolType.None);
+                    curves.Add(curveName, new PointPairList());
+                    Color c = Color.DarkBlue; //Color.FromArgb(255, r.Next(255), r.Next(255), r.Next(255));
+                    gp.AddCurve(curveName, curves[curveName], c, SymbolType.None);
                     curveNames[i, j] = curveName;
                 }
             }
-            this.view.ViewActionCall(ViewEventType.SolovePodhod2Type2Mass, fname, curveNames);
+            view.ViewActionCall(ViewEventType.SolovePodhod2Type2Mass, fname, curveNames);
         }
 
-        internal void ShowResultType2Mass(ZedGraph.PointPairList p, Dictionary<string, List<ResPointViewType2>> r)
+        internal void ShowResultType2Mass(PointPairList p, Dictionary<string, List<ResPointViewType2>> r)
         {
-            this.listBox1.Items.Clear();
+            listBox1.Items.Clear();
             this.r = r;
             foreach (string s in r.Keys)
             {
-                this.listBox1.Items.Add(s);
+                listBox1.Items.Add(s);
             }
             //p.Sort(SortType.XValues);
-            this.zgSolve1.GraphPane.AddCurve("divide", p, Color.Red, SymbolType.Circle);
-            this.listBox1.SelectedIndex = 0;
-            this.zgSolve1.AxisChange();
-            this.zgSolve1.Refresh();
+            zgSolve1.GraphPane.AddCurve("divide", p, Color.Red, SymbolType.Circle);
+            listBox1.SelectedIndex = 0;
+            zgSolve1.AxisChange();
+            zgSolve1.Refresh();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBox lb = sender as ListBox;
-            this.dgv.DataSource = null;
-            this.dgv.DataSource = r[lb.Items[lb.SelectedIndex].ToString()];
+            var lb = sender as ListBox;
+            dgv.DataSource = null;
+            dgv.DataSource = r[lb.Items[lb.SelectedIndex].ToString()];
         }
 
         internal void DrawCurves(Dictionary<string, RKResults> results)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.Invoke(new Action<Dictionary<string, RKResults>>(this.DrawCurves), results);
+                Invoke(new Action<Dictionary<string, RKResults>>(DrawCurves), results);
             }
             else
             {
                 foreach (string s in results.Keys)
                 {
-                    results[s].ForEach(r => this.curves[s].Add(r.Y[0], r.Y[1]));
+                    results[s].ForEach(r => curves[s].Add(r.Y[0], r.Y[1]));
                 }
             }
         }
 
         //-------------------------
 
-        private Dictionary<string, int> pCountList = new Dictionary<string, int>();
-
         private void mfList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBox list = sender as ListBox;
+            var list = sender as ListBox;
             dgvGama.RowCount = 1;
             dgvGama.ColumnCount = list.SelectedIndex + 1;
             dgvParameters.RowCount = list.SelectedIndex + 2;
@@ -394,149 +432,145 @@ namespace View.Forms
             switch (list.SelectedIndex)
             {
                 case 0:
-                    this.selectedMainFuncSetCount = MainFuncSetCount.Two;
+                    selectedMainFuncSetCount = MainFuncSetCount.Two;
                     break;
                 case 1:
-                    this.selectedMainFuncSetCount = MainFuncSetCount.Three;
+                    selectedMainFuncSetCount = MainFuncSetCount.Three;
                     break;
                 case 2:
-                    this.selectedMainFuncSetCount = MainFuncSetCount.Four;
+                    selectedMainFuncSetCount = MainFuncSetCount.Four;
                     break;
                 case 3:
-                    this.selectedMainFuncSetCount = MainFuncSetCount.Five;
+                    selectedMainFuncSetCount = MainFuncSetCount.Five;
                     break;
-
             }
-
         }
 
         private void sfList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBox list = sender as ListBox;
-            dgvParameters.ColumnCount = this.pCountList[(list.Items[list.SelectedIndex] as string).ToUpper()];
+            var list = sender as ListBox;
+            dgvParameters.ColumnCount = pCountList[(list.Items[list.SelectedIndex] as string).ToUpper()];
             switch (list.SelectedIndex)
             {
                 case 0:
-                    this.selectedSecondFuncType = SecondFuncType.Liner;
+                    selectedSecondFuncType = SecondFuncType.Liner;
                     break;
                 case 1:
-                    this.selectedSecondFuncType = SecondFuncType.Square;
+                    selectedSecondFuncType = SecondFuncType.Square;
                     break;
                 case 2:
-                    this.selectedSecondFuncType = SecondFuncType.PeriodT;
+                    selectedSecondFuncType = SecondFuncType.PeriodT;
                     break;
                 case 3:
-                    this.selectedSecondFuncType = SecondFuncType.PeriodZ;
+                    selectedSecondFuncType = SecondFuncType.PeriodZ;
                     break;
             }
         }
-
-        public string curveName = "line";
-        public string curveName1 = "line1";
-        public string curveName2 = "line2";
-        public string curveName3 = "line3";
-        public string curveNameSuff = "_1";
-        private RAlgSolver ra1;
-        private RAlgSolver ra2;
-        private RAlgSolver ra3;
-
-
-        private RKResults res = null;
-        private TaskWorker tw = null;
-        private TaskParameters tps = null;
-        private Functions_2_2 funcDescr = null;
-        private int n;
-        private object tblResList;
-        public int setCount;
-        Vector startVector;
-
-        public System.Globalization.CultureInfo enUsCulture = new System.Globalization.CultureInfo("en-US");
 
         private void btnSolveRK_Click(object sender, EventArgs e)
         {
             try
             {
-                this.btnSolveRK.Enabled = false;
-                this.isReal = false;
-                this.view.Output.ClearScreen();
-                this.grcTabRes.DataSource = null;
-                this.n = int.Parse(this.txtN.Text, enUsCulture);
-                this.setCount = this.rbN1.Checked ? 1 : 2;
+                btnSolveRK.Enabled = false;
+                isReal = false;
+                view.Output.ClearScreen();
+                grcTabRes.DataSource = null;
+                n = int.Parse(txtN.Text, enUsCulture);
+                setCount = rbN1.Checked ? 1 : 2;
                 //this.gamma = double.Parse(txtGamma.Text);
 
-                if (this.setCount == 1)
+                if (setCount == 1)
                 {
-                    this.view.ConfigGraphPane(this.zgcMainChart2, this, PaneLayout.SingleColumn, new List<Core.ChartInfo>() 
-            {
-                new Core.ChartInfo(){ Title="(t,z1)", XAxisTitle="t", YAxisTitle="z1"},
-            });
+                    view.ConfigGraphPane(zgcMainChart2, this, PaneLayout.SingleColumn, new List<ChartInfo>
+                                                                                           {
+                                                                                               new ChartInfo
+                                                                                                   {
+                                                                                                       Title = "(t,z1)",
+                                                                                                       XAxisTitle = "t",
+                                                                                                       YAxisTitle = "z1"
+                                                                                                   },
+                                                                                           });
                 }
                 else
                 {
-
-                    this.view.ConfigGraphPane(this.zgcMainChart2, this, PaneLayout.SingleColumn, new List<Core.ChartInfo>() 
-            {
-                new Core.ChartInfo(){ Title="(t,z1)", XAxisTitle="t", YAxisTitle="z1"},
-                new Core.ChartInfo(){ Title="(z1,z2)", XAxisTitle="z1", YAxisTitle="z2"}
-            });
+                    view.ConfigGraphPane(zgcMainChart2, this, PaneLayout.SingleColumn, new List<ChartInfo>
+                                                                                           {
+                                                                                               new ChartInfo
+                                                                                                   {
+                                                                                                       Title = "(t,z1)",
+                                                                                                       XAxisTitle = "t",
+                                                                                                       YAxisTitle = "z1"
+                                                                                                   },
+                                                                                               new ChartInfo
+                                                                                                   {
+                                                                                                       Title = "(z1,z2)",
+                                                                                                       XAxisTitle = "z1",
+                                                                                                       YAxisTitle = "z2"
+                                                                                                   }
+                                                                                           });
                 }
                 //ZedGraph.GraphPane gp = this.zgcMainChart2.GraphPane;
                 //gp.CurveList.Clear();
-                this.curves.Clear();
+                curves.Clear();
 
 
-                if (this.setCount == 1)
+                if (setCount == 1)
                 {
-                    this.curves.Add(this.curveName, new PointPairList());
-                    this.zgcMainChart2.MasterPane[0].AddCurve(this.curveName, this.curves[curveName], Color.Black, SymbolType.None);
+                    curves.Add(curveName, new PointPairList());
+                    zgcMainChart2.MasterPane[0].AddCurve(curveName, curves[curveName], Color.Black, SymbolType.None);
                 }
                 else
                 {
-                    this.curves.Add(this.curveName, new PointPairList());
-                    this.curves.Add(this.curveName + this.curveNameSuff, new PointPairList());
-                    this.zgcMainChart2.MasterPane[0].AddCurve(this.curveName + this.curveNameSuff, this.curves[this.curveName + this.curveNameSuff], Color.Black, SymbolType.None);
-                    this.zgcMainChart2.MasterPane[1].AddCurve(this.curveName, this.curves[curveName], Color.Black, SymbolType.None);
+                    curves.Add(curveName, new PointPairList());
+                    curves.Add(curveName + curveNameSuff, new PointPairList());
+                    zgcMainChart2.MasterPane[0].AddCurve(curveName + curveNameSuff, curves[curveName + curveNameSuff],
+                                                         Color.Black, SymbolType.None);
+                    zgcMainChart2.MasterPane[1].AddCurve(curveName, curves[curveName], Color.Black, SymbolType.None);
                 }
 
-                List<double> p = new List<double>();
+                var p = new List<double>();
 
-                List<double> gammaList = new List<double>();
+                var gammaList = new List<double>();
                 for (int i = 0; i < dgvGama.ColumnCount; i++)
                 {
                     double d = double.Parse(dgvGama.Rows[0].Cells[i].Value.ToString().Replace(',', '.'), enUsCulture);
                     gammaList.Add(d);
                 }
 
-                List<TaskParameter> list = new List<TaskParameter>();
+                var list = new List<TaskParameter>();
                 for (int i = 0; i < dgvParameters.RowCount; i++)
                 {
-                    TaskParameter tp = new TaskParameter(dgvParameters.ColumnCount);
+                    var tp = new TaskParameter(dgvParameters.ColumnCount);
                     for (int j = 0; j < dgvParameters.ColumnCount; j++)
                     {
-                        double val = double.Parse(dgvParameters.Rows[i].Cells[j].Value.ToString().Replace(',', '.'), enUsCulture);
+                        double val = double.Parse(dgvParameters.Rows[i].Cells[j].Value.ToString().Replace(',', '.'),
+                                                  enUsCulture);
                         tp.Param[j] = val;
                     }
                     list.Add(tp);
                 }
 
-                this.tps = new TaskParameters(list, gammaList);
-                string mfName = this.setCount == 1 ? "MF1" : "MF2";
-                this.funcDescr = new Functions_2_2(mfName, this.fnames[(sfList.SelectedItem as string).ToUpper()]);
+                tps = new TaskParameters(list, gammaList);
+                string mfName = setCount == 1 ? "MF1" : "MF2";
+                funcDescr = new Functions_2_2(mfName, fnames[(sfList.SelectedItem as string).ToUpper()]);
 
-                this.tw = new TaskWorker(tps, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
+                tw = new TaskWorker(tps, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
 
 
-                this.startVector = this.setCount == 1 ? new Vector(1, double.Parse(this.txtY0.Text.Replace(',', '.'), enUsCulture)) :
-                    new Vector(2, double.Parse(this.txtY00.Text.Replace(',', '.'), enUsCulture), double.Parse(this.txtY01.Text.Replace(',', '.'), enUsCulture));
+                startVector = setCount == 1
+                                  ? new Vector(1, double.Parse(txtY0.Text.Replace(',', '.'), enUsCulture))
+                                  : new Vector(2, double.Parse(txtY00.Text.Replace(',', '.'), enUsCulture),
+                                               double.Parse(txtY01.Text.Replace(',', '.'), enUsCulture));
 
-                RKVectorForm rk = new RKVectorForm(tw, curveName, double.Parse(this.txtT0.Text.Replace(',', '.'), enUsCulture), double.Parse(this.txtT1.Text.Replace(',', '.'), enUsCulture), startVector);
-                this.res = rk.SolveWithConstH(n, RKMetodType.RK4_1);
+                var rk = new RKVectorForm(tw, curveName, double.Parse(txtT0.Text.Replace(',', '.'), enUsCulture),
+                                          double.Parse(txtT1.Text.Replace(',', '.'), enUsCulture), startVector);
+                res = rk.SolveWithConstH(n, RKMetodType.RK4_1);
 
-                if (this.rbN1.Checked)
+                if (rbN1.Checked)
                 {
                     for (int i = 0; i < res.Count - 1; i++)
                     {
-                        this.curves[curveName].Add(res[i].X, res[i].Y[0]);
+                        curves[curveName].Add(res[i].X, res[i].Y[0]);
                     }
                     //res.ForEach(r => this.curves[curveName].Add(r.X, r.Y[0]));
                 }
@@ -544,42 +578,43 @@ namespace View.Forms
                 {
                     for (int i = 0; i < res.Count - 2; i++)
                     {
-                        this.curves[curveName + curveNameSuff].Add(res[i].X, res[i].Y[0]);
-                        this.curves[curveName].Add(res[i].Y[0], res[i].Y[1]);
+                        curves[curveName + curveNameSuff].Add(res[i].X, res[i].Y[0]);
+                        curves[curveName].Add(res[i].Y[0], res[i].Y[1]);
                     }
                     //res.ForEach(r => this.curves[curveName].Add(r.Y[0], r.Y[1]));
                 }
-                this.zgcMainChart2.AxisChange();
-                this.zgcMainChart2.Refresh();
+                zgcMainChart2.AxisChange();
+                zgcMainChart2.Refresh();
 
-                if (this.setCount == 1)
+                if (setCount == 1)
                 {
-                    this.tblResList = new List<ResPointViewType1>();
+                    tblResList = new List<ResPointViewType1>();
                     for (int i = 0; i < res.Count - 1; i++)
-                        (this.tblResList as List<ResPointViewType1>).Add(new ResPointViewType1(res[i].X, res[i].Y[0], -1, -1));
-                    this.grcTabRes.DataSource = null;
-                    this.grcTabRes.DataSource = tblResList;
+                        (tblResList as List<ResPointViewType1>).Add(new ResPointViewType1(res[i].X, res[i].Y[0], -1, -1));
+                    grcTabRes.DataSource = null;
+                    grcTabRes.DataSource = tblResList;
                 }
                 else
                 {
-                    this.tblResList = new List<ResPointViewType2>();
+                    tblResList = new List<ResPointViewType2>();
                     for (int i = 0; i < res.Count - 2; i++)
-                        (this.tblResList as List<ResPointViewType2>).Add(new ResPointViewType2(res[i].X, res[i].Y[0], res[i].Y[1], -1, -1));
-                    this.grcTabRes.DataSource = null;
-                    this.grcTabRes.DataSource = tblResList;
+                        (tblResList as List<ResPointViewType2>).Add(new ResPointViewType2(res[i].X, res[i].Y[0],
+                                                                                          res[i].Y[1], -1, -1));
+                    grcTabRes.DataSource = null;
+                    grcTabRes.DataSource = tblResList;
                 }
-                this.grcTabRes.RefreshDataSource();
+                grcTabRes.RefreshDataSource();
             }
             finally
             {
-                this.btnSolveRK.Enabled = true;
+                btnSolveRK.Enabled = true;
             }
         }
 
         private Dictionary<double, int> GetTT(RKResults res, int[] itab)
         {
-            Dictionary<double, int> tt = new Dictionary<double, int>();
-            if (this.setCount == 1)
+            var tt = new Dictionary<double, int>();
+            if (setCount == 1)
             {
                 for (int i = 0; i < res.Count - 1; i++)
                 {
@@ -598,9 +633,9 @@ namespace View.Forms
 
         private List<List<double>> GetRandomStartParam()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                return (List<List<double>>)this.Invoke(new Func<List<List<double>>>(_GetRandomParam));
+                return (List<List<double>>) Invoke(new Func<List<List<double>>>(_GetRandomParam));
             }
             else
             {
@@ -610,8 +645,8 @@ namespace View.Forms
 
         private List<List<double>> _GetRandomParam()
         {
-            List<List<double>> sp = new List<List<double>>();
-            Random rand = new Random();
+            var sp = new List<List<double>>();
+            var rand = new Random();
             for (int i = 0; i < mfList.SelectedIndex + 2; i++)
             {
                 sp.Add(new List<double>());
@@ -619,7 +654,7 @@ namespace View.Forms
                 {
                     //double val = rand.Next(10);
                     //val /= 5 * rand.NextDouble() > 0.5 ? 1 : -1;
-                    double val = rand.NextDouble() * (rand.NextDouble() > 0.5 ? 1 : -1);
+                    double val = rand.NextDouble()*(rand.NextDouble() > 0.5 ? 1 : -1);
                     sp[i].Add(val);
                 }
             }
@@ -639,89 +674,84 @@ namespace View.Forms
                 }
                 s += Math.Pow(ss, 0.5);
             }
-            return s / (r2.Count - n);
+            return s/(r2.Count - n);
         }
 
-        private List<List<double>> randomStartParameters;
-        bool isReal = false;
-
-        private RKResults DrawRes(RKResults r, RAlgSolver ra, string cn, string cnsuff, Color c, OutputHelper output, int eb, out double functional)
+        private RKResults DrawRes(RKResults r, RAlgSolver ra, string cn, string cnsuff, Color c, OutputHelper output,
+                                  int eb, out double functional)
         {
             if (!isReal)
             {
-                for (int i = 0; i < r.Count - this.setCount; i++)
+                for (int i = 0; i < r.Count - setCount; i++)
                 {
                     if (eb == 1)
                     {
-                        if (this.setCount == 1)
+                        if (setCount == 1)
                         {
-                            (this.tblResList as List<ResPointViewType1>)[i + i * step].M1 = ra.itab[i];
+                            (tblResList as List<ResPointViewType1>)[i + i*step].M1 = ra.itab[i];
                         }
                         else
                         {
-                            (this.tblResList as List<ResPointViewType2>)[i + i * step].M1 = ra.itab[i];
+                            (tblResList as List<ResPointViewType2>)[i + i*step].M1 = ra.itab[i];
                         }
                     }
                     else
                     {
-                        if (this.setCount == 1)
+                        if (setCount == 1)
                         {
-                            (this.tblResList as List<ResPointViewType1>)[i + i * step].M2 = ra.itab[i];
+                            (tblResList as List<ResPointViewType1>)[i + i*step].M2 = ra.itab[i];
                         }
                         else
                         {
-                            (this.tblResList as List<ResPointViewType2>)[i + i * step].M2 = ra.itab[i];
+                            (tblResList as List<ResPointViewType2>)[i + i*step].M2 = ra.itab[i];
                         }
-
                     }
                 }
-                this.grcTabRes.RefreshDataSource();
+                grcTabRes.RefreshDataSource();
             }
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            Dictionary<double, int> tt = this.GetTT(r, ra.itab);
+            Dictionary<double, int> tt = GetTT(r, ra.itab);
 
             //-- draw res ---
-            if (!this.curves.ContainsKey(cn))
+            if (!curves.ContainsKey(cn))
             {
-                this.curves.Add(cn, new PointPairList());
-                LineItem curve = new LineItem(cn, this.curves[cn], c, SymbolType.None);
-                curve.Line.Style = System.Drawing.Drawing2D.DashStyle.Dash;
+                curves.Add(cn, new PointPairList());
+                var curve = new LineItem(cn, curves[cn], c, SymbolType.None);
+                curve.Line.Style = DashStyle.Dash;
                 curve.Line.Width = 2;
                 //this.zgcMainChart2.MasterPane[1].CurveList.Add(curve);
 
-                if (this.setCount == 2)
+                if (setCount == 2)
                 {
-
-                    this.curves.Add(cn + cnsuff, new PointPairList());
-                    LineItem curve1 = new LineItem(cn + cnsuff, this.curves[cn + cnsuff], c, SymbolType.None);
-                    curve.Line.Style = System.Drawing.Drawing2D.DashStyle.Dash;
+                    curves.Add(cn + cnsuff, new PointPairList());
+                    var curve1 = new LineItem(cn + cnsuff, curves[cn + cnsuff], c, SymbolType.None);
+                    curve.Line.Style = DashStyle.Dash;
                     curve.Line.Width = 2;
-                    this.zgcMainChart2.MasterPane[0].CurveList.Add(curve1);
+                    zgcMainChart2.MasterPane[0].CurveList.Add(curve1);
 
-                    this.zgcMainChart2.MasterPane[1].CurveList.Add(curve);
+                    zgcMainChart2.MasterPane[1].CurveList.Add(curve);
                 }
                 else
                 {
-                    this.zgcMainChart2.MasterPane[0].CurveList.Add(curve);
+                    zgcMainChart2.MasterPane[0].CurveList.Add(curve);
                 }
-
             }
             else
             {
-                this.curves[cn].Clear();
-                if (this.setCount == 2)
+                curves[cn].Clear();
+                if (setCount == 2)
                 {
-                    this.curves[cn + cnsuff].Clear();
+                    curves[cn + cnsuff].Clear();
                 }
             }
 
             int k = 0;
-            List<TaskParameter> listDraw = new List<TaskParameter>();
+            var listDraw = new List<TaskParameter>();
             for (int i = 0; i < tps.Count; i++)
             {
-                TaskParameter tpDraw = new TaskParameter(tps[i].Param.Length);
+                var tpDraw = new TaskParameter(tps[i].Param.Length);
                 string line = string.Format("{0}) ", i);
                 for (int j = 0; j < tps[0].Param.Length; j++)
                 {
@@ -734,43 +764,43 @@ namespace View.Forms
             }
             sb.AppendLine("-----");
 
-            TaskParameters tps1 = new TaskParameters(listDraw, tt);
-            TaskWorker tw1 = new TaskWorker(tps1, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
+            var tps1 = new TaskParameters(listDraw, tt);
+            var tw1 = new TaskWorker(tps1, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
 
             double t0, t1;
             if (!isReal)
             {
-                t0 = double.Parse(this.txtT0.Text);
-                t1 = double.Parse(this.txtT1.Text);
+                t0 = double.Parse(txtT0.Text);
+                t1 = double.Parse(txtT1.Text);
             }
             else
             {
                 t0 = 0;
-                t1 = ASignal.Count * 0.01;
+                t1 = ASignal.Count*0.01;
             }
-            RKVectorForm rk1 = new RKVectorForm(tw1, cn, t0, t1, this.startVector);
-            RKResults res1 = rk1.SolveWithConstH(this.res.Count - 1, RKMetodType.RK2_1);
+            var rk1 = new RKVectorForm(tw1, cn, t0, t1, startVector);
+            RKResults res1 = rk1.SolveWithConstH(res.Count - 1, RKMetodType.RK2_1);
 
-            functional = this.GetDiff(this.res, res1);
+            functional = GetDiff(res, res1);
             sb.Append(string.Format("f={0:f6}", functional));
             //rtb.Text = sb.ToString();
             //this.SetControlFeathe(rtb, "text=", sb.ToString());
             output.WriteLine(sb.ToString());
 
-            int nn = this.setCount == 1 ? 1 : 2;
+            int nn = setCount == 1 ? 1 : 2;
             for (int i = 0; i < res1.Count - nn; i++)
             {
                 if (nn == 1)
                 {
-                    this.curves[cn].Add(res1[i].X, res1[i].Y[0]);
+                    curves[cn].Add(res1[i].X, res1[i].Y[0]);
                 }
                 else
                 {
-                    this.curves[cn].Add(res1[i].Y[0], res1[i].Y[1]);
-                    this.curves[cn + cnsuff].Add(res1[i].X, res1[i].Y[0]);
+                    curves[cn].Add(res1[i].Y[0], res1[i].Y[1]);
+                    curves[cn + cnsuff].Add(res1[i].X, res1[i].Y[0]);
                 }
             }
-            this.SetControlProperty(this.zgcMainChart2, "chart", null);
+            SetControlProperty(zgcMainChart2, "chart", null);
             //this.zgcMainChart2.AxisChange();
             //this.zgcMainChart2.Refresh();
             return res1;
@@ -780,14 +810,14 @@ namespace View.Forms
         {
             if (c.InvokeRequired)
             {
-                c.BeginInvoke(new Action<Control, string, object>(this.SetControlProperty), c, t, value);
+                c.BeginInvoke(new Action<Control, string, object>(SetControlProperty), c, t, value);
             }
             else
             {
                 switch (t)
                 {
                     case "enabled":
-                        c.Enabled = (bool)value;
+                        c.Enabled = (bool) value;
                         break;
                     case "text=":
                         c.Text = value.ToString();
@@ -799,132 +829,130 @@ namespace View.Forms
                         (c as ZedGraphControl).AxisChange();
                         (c as ZedGraphControl).Refresh();
                         break;
-
                 }
             }
         }
 
-        private int step = 0;
-
         private void btnSolveRAlg1_Click(object sender, EventArgs e)
         {
-            Thread th = new Thread(x =>
-            {
-                try
-                {
-                    if (this.randomStartParameters == null)
-                    {
-                        GenerateStartParam();
-                    }
-                    this.view.Output.WriteLine("SolveRalg1 started at " + DateTime.Now.ToString());
-                    this.SetControlProperty(this.btnSolveRAlg1, "enabled", false);
-                    int tick = Environment.TickCount;
+            var th = new Thread(x =>
+                                    {
+                                        try
+                                        {
+                                            if (randomStartParameters == null)
+                                            {
+                                                GenerateStartParam();
+                                            }
+                                            view.Output.WriteLine("SolveRalg1 started at " + DateTime.Now.ToString());
+                                            SetControlProperty(btnSolveRAlg1, "enabled", false);
+                                            int tick = Environment.TickCount;
 
-                    var r = res.Trancate(this.step);
+                                            RKResults r = res.Trancate(step);
 
-                    double[] dz1 = new double[r.Count - 1];
-                    for (int i = 1; i < r.Count; i++)
-                    {
-                        dz1[i - 1] = (r[i].Y[0] - r[i - 1].Y[0]) / (r[i].X - r[i - 1].X);
-                    }
+                                            var dz1 = new double[r.Count - 1];
+                                            for (int i = 1; i < r.Count; i++)
+                                            {
+                                                dz1[i - 1] = (r[i].Y[0] - r[i - 1].Y[0])/(r[i].X - r[i - 1].X);
+                                            }
 
-                    double[] dz2 = new double[r.Count - 2];
-                    if (this.setCount == 2)
-                    {
-                        for (int i = 1; i < dz1.Length; i++)
-                        {
-                            dz2[i - 1] = (dz1[i] - dz1[i - 1]) / (r[i].X - r[i - 1].X);
-                        }
-                    }
+                                            var dz2 = new double[r.Count - 2];
+                                            if (setCount == 2)
+                                            {
+                                                for (int i = 1; i < dz1.Length; i++)
+                                                {
+                                                    dz2[i - 1] = (dz1[i] - dz1[i - 1])/(r[i].X - r[i - 1].X);
+                                                }
+                                            }
 
-                    List<List<double>> sp = this.randomStartParameters;
+                                            List<List<double>> sp = randomStartParameters;
 
-                    RAlgSolver ra = this.setCount == 1 ? new RAlgSolver(tw, r, sp, dz1) : new RAlgSolver(tw, r, sp, dz2);
-                    ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT3);
-                    ra.R_Algorithm();
+                                            RAlgSolver ra = setCount == 1
+                                                                ? new RAlgSolver(tw, r, sp, dz1)
+                                                                : new RAlgSolver(tw, r, sp, dz2);
+                                            ra.FUNCT = ra.FUNCT3;
+                                            ra.R_Algorithm();
 
-                    double functional;
-                    this.DrawRes(r, ra, this.curveName1, this.curveNameSuff, Color.Green, this.view.Output, 1, out functional);
+                                            double functional;
+                                            DrawRes(r, ra, curveName1, curveNameSuff, Color.Green, view.Output, 1,
+                                                    out functional);
 
-                    this.ra1 = ra;
+                                            ra1 = ra;
 
-                    double t = ((Environment.TickCount - tick) / (double)1000);
-                    this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                    this.inf1 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-                }
-                catch (ApplicationException ae)
-                {
-                    MessageBox.Show(ae.Message);
-                }
-                finally
-                {
-                    this.SetControlProperty(this.btnSolveRAlg1, "enabled", true);
-                    //this.btnSolveRAlg1.Enabled = true;
-                }
-            }
-            )
-            {
-                Name = "RAlgSolve1",
-                IsBackground = true
-            };
+                                            double t = ((Environment.TickCount - tick)/(double) 1000);
+                                            view.Output.WriteLine(string.Format(
+                                                "Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                                            inf1 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                                        }
+                                        catch (ApplicationException ae)
+                                        {
+                                            MessageBox.Show(ae.Message);
+                                        }
+                                        finally
+                                        {
+                                            SetControlProperty(btnSolveRAlg1, "enabled", true);
+                                            //this.btnSolveRAlg1.Enabled = true;
+                                        }
+                                    }
+                )
+                         {
+                             Name = "RAlgSolve1",
+                             IsBackground = true
+                         };
             th.Start();
         }
 
         private void btnSolveRAlg2_Click(object sender, EventArgs e)
         {
-            Thread th = new Thread(x =>
-            {
-                try
-                {
-                    if (this.randomStartParameters == null)
-                    {
-                        GenerateStartParam();
-                    }
-                    this.view.Output.WriteLine("SolveRalg2 started at " + DateTime.Now.ToString());
-                    this.SetControlProperty(this.btnSolveRAlg2, "enabled", false);
-                    int tick = Environment.TickCount;
-                    this.inf2 = null;
-                    //List<List<double>> sp = this.GetRandomStartParam();
-                    List<List<double>> sp = this.randomStartParameters;
+            var th = new Thread(x =>
+                                    {
+                                        try
+                                        {
+                                            if (randomStartParameters == null)
+                                            {
+                                                GenerateStartParam();
+                                            }
+                                            view.Output.WriteLine("SolveRalg2 started at " + DateTime.Now.ToString());
+                                            SetControlProperty(btnSolveRAlg2, "enabled", false);
+                                            int tick = Environment.TickCount;
+                                            inf2 = null;
+                                            //List<List<double>> sp = this.GetRandomStartParam();
+                                            List<List<double>> sp = randomStartParameters;
 
-                    var r = res.Trancate(this.step);
+                                            RKResults r = res.Trancate(step);
 
-                    RAlgSolver ra = new RAlgSolver(this.tw, r, sp, this.startVector, 0);
-                    ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
-                    ra.R_Algorithm();
-                    double functional;
-                    this.DrawRes(r, ra, this.curveName2, this.curveNameSuff, Color.Blue, this.view.Output, 2, out functional);
-                    this.ra2 = ra;
-                    double t = ((Environment.TickCount - tick) / (double)1000);
-                    this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                    this.inf2 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-                }
-                catch (ApplicationException ae)
-                {
-                    MessageBox.Show(ae.Message);
-                }
-                finally
-                {
-                    this.SetControlProperty(this.btnSolveRAlg2, "enabled", true);
-                }
-            })
-            {
-                Name = "MainForm.RAlgSolve2",
-                IsBackground = true
-            };
+                                            var ra = new RAlgSolver(tw, r, sp, startVector, 0);
+                                            ra.FUNCT = ra.FUNCT4;
+                                            ra.R_Algorithm();
+                                            double functional;
+                                            DrawRes(r, ra, curveName2, curveNameSuff, Color.Blue, view.Output, 2,
+                                                    out functional);
+                                            ra2 = ra;
+                                            double t = ((Environment.TickCount - tick)/(double) 1000);
+                                            view.Output.WriteLine(string.Format(
+                                                "Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                                            inf2 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                                        }
+                                        catch (ApplicationException ae)
+                                        {
+                                            MessageBox.Show(ae.Message);
+                                        }
+                                        finally
+                                        {
+                                            SetControlProperty(btnSolveRAlg2, "enabled", true);
+                                        }
+                                    })
+                         {
+                             Name = "MainForm.RAlgSolve2",
+                             IsBackground = true
+                         };
             th.Start();
-
         }
-
-        private string inf1 = null;
-        private string inf2 = null;
-        private string inf3 = null;
 
         private void btnResults_Click(object sender, EventArgs e)
         {
-            double[,] startMas = new double[dgvParameters.RowCount, dgvParameters.ColumnCount];
-            double[,] resMas1 = new double[dgvParameters.RowCount, dgvParameters.ColumnCount];
-            double[,] resMas2 = new double[dgvParameters.RowCount, dgvParameters.ColumnCount];
+            var startMas = new double[dgvParameters.RowCount,dgvParameters.ColumnCount];
+            var resMas1 = new double[dgvParameters.RowCount,dgvParameters.ColumnCount];
+            var resMas2 = new double[dgvParameters.RowCount,dgvParameters.ColumnCount];
 
 
             int k = 0;
@@ -939,44 +967,43 @@ namespace View.Forms
                 }
             }
 
-            ResultForm rf = new ResultForm(this, startMas, resMas1, resMas2, dgvParameters.RowCount, dgvParameters.ColumnCount,
-                this.inf1, this.inf2, this.randomStartParameters);
+            var rf = new ResultForm(this, startMas, resMas1, resMas2, dgvParameters.RowCount, dgvParameters.ColumnCount,
+                                    inf1, inf2, randomStartParameters);
             rf.Show();
         }
 
         private void btnAddTask_Click(object sender, EventArgs e)
         {
-            using (EnterNameForm f = new EnterNameForm())
+            using (var f = new EnterNameForm())
             {
                 f.ShowDialog();
                 if (f.DialogResult == DialogResult.OK)
                 {
-
-                    TaskDescription td = this.LoadTaskInfo(false);
+                    TaskDescription td = LoadTaskInfo(false);
                     td.name = f.name;
-                    this.view.taskCollection.Add(td);
-                    this.view.SaveTaskCollection(this.view.taskCollection);
+                    view.taskCollection.Add(td);
+                    view.SaveTaskCollection(view.taskCollection);
 
-                    this.lstTasks.Items.Add(td.name);
+                    lstTasks.Items.Add(td.name);
                 }
             }
         }
 
         private TaskDescription LoadTaskInfo(bool isEdit)
         {
-            List<double> gamma = new List<double>();
+            var gamma = new List<double>();
             Vector startV;
-            if (this.rbN1.Checked)
+            if (rbN1.Checked)
             {
-                startV = new Vector(1, double.Parse(this.txtY0.Text.Replace(',', '.'), enUsCulture));
+                startV = new Vector(1, double.Parse(txtY0.Text.Replace(',', '.'), enUsCulture));
             }
             else
             {
-                startV = new Vector(2, double.Parse(this.txtY00.Text.Replace(',', '.'), enUsCulture),
-                    double.Parse(this.txtY01.Text.Replace(',', '.'), enUsCulture));
+                startV = new Vector(2, double.Parse(txtY00.Text.Replace(',', '.'), enUsCulture),
+                                    double.Parse(txtY01.Text.Replace(',', '.'), enUsCulture));
             }
             //int k = 0;
-            List<List<double>> sp = new List<List<double>>();
+            var sp = new List<List<double>>();
             for (int i = 0; i < dgvParameters.RowCount; i++)
             {
                 sp.Add(new List<double>());
@@ -985,72 +1012,69 @@ namespace View.Forms
                     sp[i].Add(Convert.ToDouble(dgvParameters.Rows[i].Cells[j].Value));
                 }
             }
-            for (int i = 0; i < this.dgvGama.ColumnCount; i++)
+            for (int i = 0; i < dgvGama.ColumnCount; i++)
             {
-                gamma.Add(double.Parse(this.dgvGama.Rows[0].Cells[i].Value.ToString().Replace(',', '.'), enUsCulture));
+                gamma.Add(double.Parse(dgvGama.Rows[0].Cells[i].Value.ToString().Replace(',', '.'), enUsCulture));
             }
-            TaskDescription td = new TaskDescription()
-            {
-                t0 = double.Parse(this.txtT0.Text.Replace(',', '.'), enUsCulture),
-                t1 = double.Parse(this.txtT1.Text.Replace(',', '.'), enUsCulture),
-                gammaSet = gamma,
-                startPoint = startV,
-                parametrs = sp,
-                mainFuncSetCount = this.selectedMainFuncSetCount,
-                secFuncType = this.selectedSecondFuncType
-            };
+            var td = new TaskDescription
+                         {
+                             t0 = double.Parse(txtT0.Text.Replace(',', '.'), enUsCulture),
+                             t1 = double.Parse(txtT1.Text.Replace(',', '.'), enUsCulture),
+                             gammaSet = gamma,
+                             startPoint = startV,
+                             parametrs = sp,
+                             mainFuncSetCount = selectedMainFuncSetCount,
+                             secFuncType = selectedSecondFuncType
+                         };
             if (isEdit)
             {
-                td.name = this.lstTasks.SelectedItem.ToString();
+                td.name = lstTasks.SelectedItem.ToString();
             }
             return td;
         }
 
-        private SecondFuncType selectedSecondFuncType;
-        private MainFuncSetCount selectedMainFuncSetCount;
-
         private void lstTasks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListBox list = sender as ListBox;
+            var list = sender as ListBox;
 
             if (list.SelectedIndex >= 0)
             {
-                TaskDescription task = this.view.taskCollection.ElementAt(list.SelectedIndex);
+                TaskDescription task = view.taskCollection.ElementAt(list.SelectedIndex);
 
-                this.txtT0.Text = task.t0.ToString();
-                this.txtT1.Text = task.t1.ToString();
-                this.dgvGama.RowCount = 1;
-                this.dgvGama.ColumnCount = task.gammaSet.Count;
+                txtT0.Text = task.t0.ToString();
+                txtT1.Text = task.t1.ToString();
+                dgvGama.RowCount = 1;
+                dgvGama.ColumnCount = task.gammaSet.Count;
                 for (int i = 0; i < task.gammaSet.Count; i++)
                 {
-                    this.dgvGama.Rows[0].Cells[i].Value = task.gammaSet[i];
+                    dgvGama.Rows[0].Cells[i].Value = task.gammaSet[i];
                 }
                 if (task.startPoint.Count == 1)
                 {
-                    this.txtY0.Text = task.startPoint[0].ToString();
-                    this.rbN1.Checked = true;
+                    txtY0.Text = task.startPoint[0].ToString();
+                    rbN1.Checked = true;
                 }
                 else
                 {
-                    this.rbN2.Checked = true;
-                    this.txtY00.Text = task.startPoint[0].ToString();
-                    this.txtY01.Text = task.startPoint[1].ToString();
+                    rbN2.Checked = true;
+                    txtY00.Text = task.startPoint[0].ToString();
+                    txtY01.Text = task.startPoint[1].ToString();
                 }
 
-                this.dgvParameters.RowCount = task.parametrs.Count;
-                this.dgvParameters.ColumnCount = task.parametrs[0].Count;
+                dgvParameters.RowCount = task.parametrs.Count;
+                dgvParameters.ColumnCount = task.parametrs[0].Count;
 
                 for (int i = 0; i < task.parametrs.Count; i++)
                 {
                     for (int j = 0; j < task.parametrs[i].Count; j++)
                     {
-                        this.dgvParameters.Rows[i].Cells[j].Value = task.parametrs[i][j];
+                        dgvParameters.Rows[i].Cells[j].Value = task.parametrs[i][j];
                     }
                 }
 
-                this.sfList.SelectedIndex = (int)task.secFuncType;
+                sfList.SelectedIndex = (int) task.secFuncType;
 
-                this.mfList.SelectedIndex = (int)task.mainFuncSetCount;
+                mfList.SelectedIndex = (int) task.mainFuncSetCount;
             }
         }
 
@@ -1059,9 +1083,9 @@ namespace View.Forms
             ListBox list = lstTasks;
             if (list.SelectedIndex >= 0)
             {
-                this.view.taskCollection.RemoveAt(list.SelectedIndex);
-                this.view.SaveTaskCollection(this.view.taskCollection);
-                this.lstTasks.Items.RemoveAt(list.SelectedIndex);
+                view.taskCollection.RemoveAt(list.SelectedIndex);
+                view.SaveTaskCollection(view.taskCollection);
+                lstTasks.Items.RemoveAt(list.SelectedIndex);
             }
             else
             {
@@ -1077,24 +1101,20 @@ namespace View.Forms
             if (lstTasks.SelectedIndex >= 0)
             {
                 TaskDescription t = LoadTaskInfo(true);
-                this.view.taskCollection[lstTasks.SelectedIndex] = t;
-                this.view.SaveTaskCollection(this.view.taskCollection);
+                view.taskCollection[lstTasks.SelectedIndex] = t;
+                view.SaveTaskCollection(view.taskCollection);
             }
         }
-
-        private List<double> ASignal = new List<double>();
-        private Dictionary<string, PointPairList> KursCurves = new Dictionary<string, PointPairList>();
 
         private void openFD_FileOk(object sender, CancelEventArgs e)
         {
             try
             {
-
                 ASignal.Clear();
                 KursCurves.Clear();
                 comboSignalsAprox.Items.Clear();
 
-                WorkBook wb = new WorkBook();
+                var wb = new WorkBook();
                 wb.readXLSX(openFD.FileName);
                 DataTable dt = wb.ExportDataTable();
                 double t = 0;
@@ -1109,7 +1129,6 @@ namespace View.Forms
                     {
                         object o = dt.Rows[i][j];
                         KursCurves[key].Add(new PointPair(i, Convert.ToDouble(o)));
-
                     }
                 }
                 comboSignalsAprox.SelectedIndex = 0;
@@ -1127,20 +1146,20 @@ namespace View.Forms
 
         private void comboSignalsAprox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
+            var comboBox = sender as ComboBox;
             string key = comboBox.SelectedItem.ToString();
-            this.zedAprox.GraphPane.CurveList.Clear();
-            LineItem line = new LineItem(key, this.KursCurves[key], Color.Blue, SymbolType.None);
-            this.zedAprox.GraphPane.CurveList.Add(line);
-            if (KursCurves.ContainsKey(this.aproxLine))
+            zedAprox.GraphPane.CurveList.Clear();
+            var line = new LineItem(key, KursCurves[key], Color.Blue, SymbolType.None);
+            zedAprox.GraphPane.CurveList.Add(line);
+            if (KursCurves.ContainsKey(aproxLine))
             {
-                this.KursCurves.Remove(this.aproxLine);
+                KursCurves.Remove(aproxLine);
             }
-            this.zedAprox.AxisChange();
-            this.zedAprox.Refresh();
+            zedAprox.AxisChange();
+            zedAprox.Refresh();
 
-            CWaweTransform Wawe = new CWaweTransform();
-            List<double> Signal = new List<double>();
+            var Wawe = new CWaweTransform();
+            var Signal = new List<double>();
             foreach (PointPair p in KursCurves[comboSignalsAprox.SelectedItem.ToString()])
             {
                 Signal.Add(p.Y);
@@ -1162,33 +1181,32 @@ namespace View.Forms
             comboDeepness.SelectedIndex = 0;
         }
 
-        private string aproxLine = "aprox";
-
         private void btnAprox_Click(object sender, EventArgs e)
         {
-
             try
             {
-                CWaweTransform Wawe = new CWaweTransform();
-                List<double> Signal = new List<double>();
+                var Wawe = new CWaweTransform();
+                var Signal = new List<double>();
                 foreach (PointPair p in KursCurves[comboSignalsAprox.SelectedItem.ToString()])
                 {
                     Signal.Add(p.Y);
                 }
-                ASignal = Wawe.GetAproxKoef(Signal, comboWaweOrderAprox.SelectedIndex + 1, comboDeepness.SelectedIndex + 1);
+                ASignal = Wawe.GetAproxKoef(Signal, comboWaweOrderAprox.SelectedIndex + 1,
+                                            comboDeepness.SelectedIndex + 1);
 
                 if (!KursCurves.ContainsKey(aproxLine))
                 {
                     KursCurves.Add(aproxLine, new PointPairList());
-                    zedAprox.GraphPane.CurveList.Add(new LineItem(aproxLine, KursCurves[aproxLine], Color.Red, SymbolType.Circle));
+                    zedAprox.GraphPane.CurveList.Add(new LineItem(aproxLine, KursCurves[aproxLine], Color.Red,
+                                                                  SymbolType.Circle));
                 }
                 KursCurves[aproxLine].Clear();
-                double dt = Signal.Count / ASignal.Count;
+                double dt = Signal.Count/ASignal.Count;
                 for (int t = 0; t < ASignal.Count; t++)
                 {
                     //curveAAA.AddPoint((t * dt+(t+1)*dt)/2, Math.Pow(A.Count, 0.5) * A[t]);
 
-                    KursCurves[aproxLine].Add(t * dt, Math.Pow(ASignal.Count, 0.5) * ASignal[t]);
+                    KursCurves[aproxLine].Add(t*dt, Math.Pow(ASignal.Count, 0.5)*ASignal[t]);
                 }
                 //zedAprox.GraphPane.XAxis.Scale.Max = Signal.Count;
                 zedAprox.AxisChange();
@@ -1202,32 +1220,32 @@ namespace View.Forms
 
         private void btnTransfer_Click(object sender, EventArgs e)
         {
-            this.isReal = true;
-            this.view.Output.ClearScreen();
-            this.grcTabRes.DataSource = null;
-            this.n = int.Parse(this.txtN.Text);
-            this.setCount = this.rbN1.Checked ? 1 : 2;
+            isReal = true;
+            view.Output.ClearScreen();
+            grcTabRes.DataSource = null;
+            n = int.Parse(txtN.Text);
+            setCount = rbN1.Checked ? 1 : 2;
 
             double t = 0;
-            RKResults r = new RKResults();
+            var r = new RKResults();
             foreach (double y in ASignal)
             {
                 r.Add(new RKResult(t, new Vector(1, y)));
                 t += 0.01;
             }
-            this.res = r;
-            this.randomStartParameters = this.GetRandomStartParam();
+            res = r;
+            randomStartParameters = GetRandomStartParam();
 
-            List<double> gammaList = new List<double>();
+            var gammaList = new List<double>();
             for (int i = 0; i < dgvGama.ColumnCount; i++)
             {
                 gammaList.Add(Convert.ToDouble(dgvGama.Rows[0].Cells[i].Value));
             }
 
-            List<TaskParameter> list = new List<TaskParameter>();
+            var list = new List<TaskParameter>();
             for (int i = 0; i < dgvParameters.RowCount; i++)
             {
-                TaskParameter tp = new TaskParameter(dgvParameters.ColumnCount);
+                var tp = new TaskParameter(dgvParameters.ColumnCount);
                 for (int j = 0; j < dgvParameters.ColumnCount; j++)
                 {
                     double val = Convert.ToDouble(dgvParameters.Rows[i].Cells[j].Value);
@@ -1237,11 +1255,11 @@ namespace View.Forms
             }
 
 
-            this.tps = new TaskParameters(list, gammaList);
-            string mfName = this.setCount == 1 ? "MF1" : "MF2";
-            this.funcDescr = new Functions_2_2(mfName, this.fnames[(sfList.SelectedItem as string).ToUpper()]);
-            this.startVector = new Vector(1, 0);
-            this.tw = new TaskWorker(tps, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
+            tps = new TaskParameters(list, gammaList);
+            string mfName = setCount == 1 ? "MF1" : "MF2";
+            funcDescr = new Functions_2_2(mfName, fnames[(sfList.SelectedItem as string).ToUpper()]);
+            startVector = new Vector(1, 0);
+            tw = new TaskWorker(tps, funcDescr.GetType(), funcDescr.MainFuncName, funcDescr.SecFuncName, funcDescr);
 
             xtcMain.SelectedTabPageIndex = 2;
         }
@@ -1253,10 +1271,10 @@ namespace View.Forms
 
         private void GenerateStartParam()
         {
-            this.randomStartParameters = this.GetRandomStartParam();
-            StringBuilder sb = new StringBuilder();
-            this.view.Output.WriteLine("RandomStartParam generated :");
-            foreach (List<double> list in this.randomStartParameters)
+            randomStartParameters = GetRandomStartParam();
+            var sb = new StringBuilder();
+            view.Output.WriteLine("RandomStartParam generated :");
+            foreach (var list in randomStartParameters)
             {
                 string s = string.Empty;
                 foreach (double d in list)
@@ -1265,75 +1283,77 @@ namespace View.Forms
                 }
                 sb.AppendLine(s);
             }
-            this.view.Output.WriteLine(sb.ToString());
+            view.Output.WriteLine(sb.ToString());
         }
 
         internal void DrawResult(RKResults res, string curve)
         {
             if (res[0].Y.Count == 1)
             {
-                res.ForEach(r => this.curves[curve].Add(r.X, r.Y[0]));
+                res.ForEach(r => curves[curve].Add(r.X, r.Y[0]));
             }
             else
             {
-                res.ForEach(r => this.curves[curve].Add(r.X, r.Y[0]));
-                res.ForEach(r => this.curves1[curve].Add(r.X, r.Y[1]));
-                res.ForEach(r => this.curves2[curve].Add(r.Y[0], r.Y[1]));
+                res.ForEach(r => curves[curve].Add(r.X, r.Y[0]));
+                res.ForEach(r => curves1[curve].Add(r.X, r.Y[1]));
+                res.ForEach(r => curves2[curve].Add(r.Y[0], r.Y[1]));
             }
-            this.zgc1.AxisChange();
-            this.zgc1.Refresh();
+            zgc1.AxisChange();
+            zgc1.Refresh();
         }
 
         private void btnSolveRAlg3_Click(object sender, EventArgs e)
         {
             double alpha;
-            if (double.TryParse(this.txtAlpha.Text, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out alpha))
+            if (double.TryParse(txtAlpha.Text, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentUICulture, out alpha))
             {
-                Thread th = new Thread(x =>
-                {
-                    try
-                    {
-                        this.view.Output.WriteLine("SolveRalg3 started at " + DateTime.Now.ToString());
+                var th = new Thread(x =>
+                                        {
+                                            try
+                                            {
+                                                view.Output.WriteLine("SolveRalg3 started at " + DateTime.Now.ToString());
 
-                        if (this.randomStartParameters == null)
-                        {
-                            GenerateStartParam();
-                        }
+                                                if (randomStartParameters == null)
+                                                {
+                                                    GenerateStartParam();
+                                                }
 
-                        double a = (double)alpha;
+                                                double a = alpha;
 
-                        this.SetControlProperty(this.btnSolveRAlg3, "enabled", false);
+                                                SetControlProperty(btnSolveRAlg3, "enabled", false);
 
-                        int tick = Environment.TickCount;
-                        this.inf3 = null;
-                        List<List<double>> sp = this.randomStartParameters;
+                                                int tick = Environment.TickCount;
+                                                inf3 = null;
+                                                List<List<double>> sp = randomStartParameters;
 
-                        RAlgSolver ra = new RAlgSolver(this.tw, this.res, sp, this.startVector, 1);
-                        ra.FUNCT = new RAlgSolver.RAlgFunctionDelegate(ra.FUNCT4);
-                        ra.alpha = a;
-                        ra.R_Algorithm();
+                                                var ra = new RAlgSolver(tw, res, sp, startVector, 1);
+                                                ra.FUNCT = ra.FUNCT4;
+                                                ra.alpha = a;
+                                                ra.R_Algorithm();
 
-                        double functional;
-                        this.DrawRes(res, ra, this.curveName3, this.curveNameSuff, Color.DeepPink, this.view.Output, 2, out functional);
+                                                double functional;
+                                                DrawRes(res, ra, curveName3, curveNameSuff, Color.DeepPink, view.Output,
+                                                        2, out functional);
 
-                        this.ra3 = ra;
-                        double t = ((Environment.TickCount - tick) / (double)1000);
-                        this.view.Output.WriteLine(string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
-                        this.inf3 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
-                    }
-                    catch (ApplicationException ae)
-                    {
-                        MessageBox.Show(ae.Message);
-                    }
-                    finally
-                    {
-                        this.SetControlProperty(this.btnSolveRAlg3, "enabled", true);
-                    }
-                })
-            {
-                Name = "MainForm.RAlgSolve3",
-                IsBackground = true
-            };
+                                                ra3 = ra;
+                                                double t = ((Environment.TickCount - tick)/(double) 1000);
+                                                view.Output.WriteLine(
+                                                    string.Format("Result: f = {0:f6} time = {1} sec\r\n", functional, t));
+                                                inf3 = string.Format("Result: f = {0:f6} time = {1} sec", functional, t);
+                                            }
+                                            catch (ApplicationException ae)
+                                            {
+                                                MessageBox.Show(ae.Message);
+                                            }
+                                            finally
+                                            {
+                                                SetControlProperty(btnSolveRAlg3, "enabled", true);
+                                            }
+                                        })
+                             {
+                                 Name = "MainForm.RAlgSolve3",
+                                 IsBackground = true
+                             };
                 th.Start(alpha);
             }
             else
@@ -1344,7 +1364,6 @@ namespace View.Forms
 
         private void btnSolveAll_Click(object sender, EventArgs e)
         {
-
         }
 
         private void speStep_EditValueChanged(object sender, EventArgs e)
@@ -1352,17 +1371,16 @@ namespace View.Forms
             step = Convert.ToInt32(speStep.EditValue);
         }
 
-        private void grvTabRes_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+        private void grvTabRes_CustomDrawCell(object sender, RowCellCustomDrawEventArgs e)
         {
-            if(e.Column.FieldName == "M1" || e.Column.FieldName =="M2")
+            if (e.Column.FieldName == "M1" || e.Column.FieldName == "M2")
             {
                 int v = Convert.ToInt32(e.CellValue);
-                if(v<=0)
+                if (v <= 0)
                 {
-                    e.DisplayText ="";
+                    e.DisplayText = "";
                 }
             }
         }
-
     }
 }
