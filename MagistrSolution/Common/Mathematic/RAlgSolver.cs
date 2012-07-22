@@ -73,14 +73,14 @@ namespace Common.Mathematic
             int k = 0;
             for (int i = 0; i < startParameters.Count; i++)
             {
-                var tp = new TaskParameter(startParameters[i].Count);
+                var tp1 = new TaskParameter(startParameters[i].Count);
                 for (int j = 0; j < startParameters[i].Count; j++)
                 {
                     x[k] = startParameters[i][j];
-                    tp.Param[j] = x[k];
+                    tp1.Param[j] = x[k];
                     k++;
                 }
-                list.Add(tp);
+                list.Add(tp1);
             }
             c = k;
             tp = new TaskParameters(list, double.MinValue);
