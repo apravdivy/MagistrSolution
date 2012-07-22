@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common.Wawe
 {
@@ -10,28 +8,32 @@ namespace Common.Wawe
     /// </summary>
     public class CDecomposition
     {
-        /// <summary>
-        /// Степень двойки длины сигнала
-        /// </summary>
-        public int J;
-        /// <summary>
-        /// Порядок вейвлета
-        /// </summary>
-        public int WawletOrder;
-        /// <summary>
-        /// Длина исходного сигнала
-        /// </summary>
-        public int SignalLength;
+        private readonly int[][] L = new int[10][];
+
         /// <summary>
         /// Коэффициенты аппроксимации на последнем уровне разлжения
         /// </summary>
         public List<double> Approx;
+
         /// <summary>
         /// Коэффициенты детализации на каждом уровне разложения. Размер массива определяет глубину разложения
         /// </summary>
         public List<double>[] Details;
 
-        private int[][] L = new int[10][];
+        /// <summary>
+        /// Степень двойки длины сигнала
+        /// </summary>
+        public int J;
+
+        /// <summary>
+        /// Длина исходного сигнала
+        /// </summary>
+        public int SignalLength;
+
+        /// <summary>
+        /// Порядок вейвлета
+        /// </summary>
+        public int WawletOrder;
 
         /// <summary>
         /// конструктор
@@ -47,11 +49,13 @@ namespace Common.Wawe
             {
                 L[i] = new int[5];
             }
+
             #region Set Lj
+
             L[0][0] = 0;
-            L[0][1] = 0; 
-            L[0][2] = 0; 
-            L[0][3] = 0; 
+            L[0][1] = 0;
+            L[0][2] = 0;
+            L[0][3] = 0;
             L[0][4] = 0;
 
             L[1][0] = 1;
@@ -107,6 +111,7 @@ namespace Common.Wawe
             L[9][2] = 16;
             L[9][3] = 17;
             L[9][4] = 18;
+
             #endregion
         }
 
@@ -116,38 +121,10 @@ namespace Common.Wawe
         /// <returns></returns>
         public List<double> GetKoefsForMera()
         {
-            List<double> reslist = new List<double>();
+            var reslist = new List<double>();
 
-            double Sum=0;
-            double Ls=0;
-            for (int j = Details.Length-1; j >=0; j--)
-            {
-                int nomer=0;
-                if (j == Details.Length - 2)
-                    nomer = 1;
-                if (j == Details.Length - 3)
-                    nomer = 2;
-                if (j == Details.Length - 4)
-                    nomer = 3;
-                if (j <= Details.Length - 5)
-                    nomer = 4;
-
-                int bbb=(int)Math.Pow(2, j);
-                int P = Math.Min(L[WawletOrder-1][nomer],bbb );
-                
-                for (int n = 0; n < Details[j].Count; n++)
-                {
-                    if (n >= P)
-                    {
-                        Ls++;
-                        Sum += Math.Pow(Details[j][n] * Math.Pow(2, j), 2);
-                    }
-                    
-                }
- 
-            }
-            Sum = Math.Sqrt(Sum);
-            
+            double Sum = 0;
+            double Ls = 0;
             for (int j = Details.Length - 1; j >= 0; j--)
             {
                 int nomer = 0;
@@ -160,22 +137,45 @@ namespace Common.Wawe
                 if (j <= Details.Length - 5)
                     nomer = 4;
 
-                int bbb = (int)Math.Pow(2, j);
+                var bbb = (int) Math.Pow(2, j);
                 int P = Math.Min(L[WawletOrder - 1][nomer], bbb);
 
                 for (int n = 0; n < Details[j].Count; n++)
                 {
                     if (n >= P)
                     {
+                        Ls++;
+                        Sum += Math.Pow(Details[j][n]*Math.Pow(2, j), 2);
+                    }
+                }
+            }
+            Sum = Math.Sqrt(Sum);
 
-                        double val = Details[j][n] * Math.Pow(2, j) / Sum;
+            for (int j = Details.Length - 1; j >= 0; j--)
+            {
+                int nomer = 0;
+                if (j == Details.Length - 2)
+                    nomer = 1;
+                if (j == Details.Length - 3)
+                    nomer = 2;
+                if (j == Details.Length - 4)
+                    nomer = 3;
+                if (j <= Details.Length - 5)
+                    nomer = 4;
+
+                var bbb = (int) Math.Pow(2, j);
+                int P = Math.Min(L[WawletOrder - 1][nomer], bbb);
+
+                for (int n = 0; n < Details[j].Count; n++)
+                {
+                    if (n >= P)
+                    {
+                        double val = Details[j][n]*Math.Pow(2, j)/Sum;
                         reslist.Add(val);
                     }
-
                 }
-
             }
-            
+
             return reslist;
         }
 
@@ -193,7 +193,7 @@ namespace Common.Wawe
                 if (j <= Details.Length - 5)
                     nomer = 4;
 
-                int bbb = (int)Math.Pow(2, j);
+                var bbb = (int) Math.Pow(2, j);
                 int P = Math.Min(L[WawletOrder - 1][nomer], bbb);
 
                 for (int n = 0; n < Details[j].Count; n++)
@@ -208,10 +208,6 @@ namespace Common.Wawe
                 for (int n = 0; n < Details[j].Count; n++)
                     if (Details[j][n] >= noiseval)
                         Details[j][n] = 0;
-
- 
         }
-
-         
     }
 }

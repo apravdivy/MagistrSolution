@@ -32,6 +32,10 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.txtM = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtK = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.txtT0 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.txtTr = new System.Windows.Forms.TextBox();
@@ -52,12 +56,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtL = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtT_end = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtN2 = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtN1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.txtN = new System.Windows.Forms.TextBox();
+            this.lblN = new System.Windows.Forms.Label();
             this.btnDo = new System.Windows.Forms.Button();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -69,12 +69,18 @@
             // 
             // splitContainer1
             // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.txtM);
+            this.splitContainer1.Panel1.Controls.Add(this.label2);
+            this.splitContainer1.Panel1.Controls.Add(this.txtK);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.txtT0);
             this.splitContainer1.Panel1.Controls.Add(this.label14);
             this.splitContainer1.Panel1.Controls.Add(this.txtTr);
@@ -95,24 +101,60 @@
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.txtL);
             this.splitContainer1.Panel1.Controls.Add(this.label4);
-            this.splitContainer1.Panel1.Controls.Add(this.txtT_end);
-            this.splitContainer1.Panel1.Controls.Add(this.label3);
-            this.splitContainer1.Panel1.Controls.Add(this.txtN2);
-            this.splitContainer1.Panel1.Controls.Add(this.label2);
-            this.splitContainer1.Panel1.Controls.Add(this.txtN1);
-            this.splitContainer1.Panel1.Controls.Add(this.label1);
+            this.splitContainer1.Panel1.Controls.Add(this.txtN);
+            this.splitContainer1.Panel1.Controls.Add(this.lblN);
             this.splitContainer1.Panel1.Controls.Add(this.btnDo);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.chart);
             this.splitContainer1.Size = new System.Drawing.Size(850, 612);
-            this.splitContainer1.SplitterDistance = 190;
+            this.splitContainer1.SplitterDistance = 184;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // txtM
+            // 
+            this.txtM.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtM.Location = new System.Drawing.Point(72, 122);
+            this.txtM.Name = "txtM";
+            this.txtM.Size = new System.Drawing.Size(100, 20);
+            this.txtM.TabIndex = 57;
+            this.txtM.Text = "64";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 125);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(16, 13);
+            this.label2.TabIndex = 56;
+            this.label2.Text = "M";
+            // 
+            // txtK
+            // 
+            this.txtK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtK.Location = new System.Drawing.Point(72, 82);
+            this.txtK.Name = "txtK";
+            this.txtK.Size = new System.Drawing.Size(100, 20);
+            this.txtK.TabIndex = 55;
+            this.txtK.Text = "0,1";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 85);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(14, 13);
+            this.label1.TabIndex = 54;
+            this.label1.Text = "K";
             // 
             // txtT0
             // 
-            this.txtT0.Location = new System.Drawing.Point(72, 393);
+            this.txtT0.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtT0.Location = new System.Drawing.Point(72, 431);
             this.txtT0.Name = "txtT0";
             this.txtT0.Size = new System.Drawing.Size(100, 20);
             this.txtT0.TabIndex = 53;
@@ -121,7 +163,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(14, 396);
+            this.label14.Location = new System.Drawing.Point(14, 434);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(20, 13);
             this.label14.TabIndex = 52;
@@ -129,7 +171,9 @@
             // 
             // txtTr
             // 
-            this.txtTr.Location = new System.Drawing.Point(72, 367);
+            this.txtTr.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTr.Location = new System.Drawing.Point(72, 405);
             this.txtTr.Name = "txtTr";
             this.txtTr.Size = new System.Drawing.Size(100, 20);
             this.txtTr.TabIndex = 51;
@@ -138,7 +182,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(14, 370);
+            this.label11.Location = new System.Drawing.Point(14, 408);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(17, 13);
             this.label11.TabIndex = 50;
@@ -146,7 +190,9 @@
             // 
             // txtT1
             // 
-            this.txtT1.Location = new System.Drawing.Point(72, 341);
+            this.txtT1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtT1.Location = new System.Drawing.Point(72, 379);
             this.txtT1.Name = "txtT1";
             this.txtT1.Size = new System.Drawing.Size(100, 20);
             this.txtT1.TabIndex = 49;
@@ -155,7 +201,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(14, 344);
+            this.label12.Location = new System.Drawing.Point(14, 382);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(16, 13);
             this.label12.TabIndex = 48;
@@ -163,7 +209,9 @@
             // 
             // txtC2
             // 
-            this.txtC2.Location = new System.Drawing.Point(72, 303);
+            this.txtC2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtC2.Location = new System.Drawing.Point(72, 341);
             this.txtC2.Name = "txtC2";
             this.txtC2.Size = new System.Drawing.Size(100, 20);
             this.txtC2.TabIndex = 47;
@@ -172,7 +220,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(14, 306);
+            this.label10.Location = new System.Drawing.Point(14, 344);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(19, 13);
             this.label10.TabIndex = 46;
@@ -180,7 +228,9 @@
             // 
             // txtC1
             // 
-            this.txtC1.Location = new System.Drawing.Point(72, 199);
+            this.txtC1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtC1.Location = new System.Drawing.Point(72, 237);
             this.txtC1.Name = "txtC1";
             this.txtC1.Size = new System.Drawing.Size(100, 20);
             this.txtC1.TabIndex = 45;
@@ -189,7 +239,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 202);
+            this.label9.Location = new System.Drawing.Point(14, 240);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(19, 13);
             this.label9.TabIndex = 44;
@@ -197,7 +247,9 @@
             // 
             // txtRo2
             // 
-            this.txtRo2.Location = new System.Drawing.Point(72, 277);
+            this.txtRo2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRo2.Location = new System.Drawing.Point(72, 315);
             this.txtRo2.Name = "txtRo2";
             this.txtRo2.Size = new System.Drawing.Size(100, 20);
             this.txtRo2.TabIndex = 43;
@@ -206,7 +258,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 280);
+            this.label8.Location = new System.Drawing.Point(14, 318);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(22, 13);
             this.label8.TabIndex = 42;
@@ -214,7 +266,9 @@
             // 
             // txtRo1
             // 
-            this.txtRo1.Location = new System.Drawing.Point(72, 173);
+            this.txtRo1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRo1.Location = new System.Drawing.Point(72, 211);
             this.txtRo1.Name = "txtRo1";
             this.txtRo1.Size = new System.Drawing.Size(100, 20);
             this.txtRo1.TabIndex = 41;
@@ -223,7 +277,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 176);
+            this.label7.Location = new System.Drawing.Point(14, 214);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(22, 13);
             this.label7.TabIndex = 40;
@@ -231,7 +285,9 @@
             // 
             // txtLambda2
             // 
-            this.txtLambda2.Location = new System.Drawing.Point(72, 251);
+            this.txtLambda2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLambda2.Location = new System.Drawing.Point(72, 289);
             this.txtLambda2.Name = "txtLambda2";
             this.txtLambda2.Size = new System.Drawing.Size(100, 20);
             this.txtLambda2.TabIndex = 39;
@@ -240,7 +296,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 254);
+            this.label6.Location = new System.Drawing.Point(14, 292);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(47, 13);
             this.label6.TabIndex = 38;
@@ -248,7 +304,9 @@
             // 
             // txtLambda1
             // 
-            this.txtLambda1.Location = new System.Drawing.Point(72, 147);
+            this.txtLambda1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLambda1.Location = new System.Drawing.Point(72, 185);
             this.txtLambda1.Name = "txtLambda1";
             this.txtLambda1.Size = new System.Drawing.Size(100, 20);
             this.txtLambda1.TabIndex = 37;
@@ -257,7 +315,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 150);
+            this.label5.Location = new System.Drawing.Point(14, 188);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 13);
             this.label5.TabIndex = 36;
@@ -265,7 +323,9 @@
             // 
             // txtL
             // 
-            this.txtL.Location = new System.Drawing.Point(72, 105);
+            this.txtL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtL.Location = new System.Drawing.Point(72, 56);
             this.txtL.Name = "txtL";
             this.txtL.Size = new System.Drawing.Size(100, 20);
             this.txtL.TabIndex = 35;
@@ -274,70 +334,36 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 108);
+            this.label4.Location = new System.Drawing.Point(14, 59);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(13, 13);
             this.label4.TabIndex = 34;
             this.label4.Text = "L";
             // 
-            // txtT_end
+            // txtN
             // 
-            this.txtT_end.Location = new System.Drawing.Point(72, 79);
-            this.txtT_end.Name = "txtT_end";
-            this.txtT_end.Size = new System.Drawing.Size(100, 20);
-            this.txtT_end.TabIndex = 33;
-            this.txtT_end.Text = "30";
-            this.txtT_end.Visible = false;
+            this.txtN.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtN.Location = new System.Drawing.Point(72, 12);
+            this.txtN.Name = "txtN";
+            this.txtN.Size = new System.Drawing.Size(100, 20);
+            this.txtN.TabIndex = 29;
+            this.txtN.Text = "100";
             // 
-            // label3
+            // lblN
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 82);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(34, 13);
-            this.label3.TabIndex = 32;
-            this.label3.Text = "t_end";
-            this.label3.Visible = false;
-            // 
-            // txtN2
-            // 
-            this.txtN2.Location = new System.Drawing.Point(72, 38);
-            this.txtN2.Name = "txtN2";
-            this.txtN2.Size = new System.Drawing.Size(100, 20);
-            this.txtN2.TabIndex = 31;
-            this.txtN2.Text = "40";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 41);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(21, 13);
-            this.label2.TabIndex = 30;
-            this.label2.Text = "N2";
-            // 
-            // txtN1
-            // 
-            this.txtN1.Location = new System.Drawing.Point(72, 12);
-            this.txtN1.Name = "txtN1";
-            this.txtN1.Size = new System.Drawing.Size(100, 20);
-            this.txtN1.TabIndex = 29;
-            this.txtN1.Text = "40";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 13);
-            this.label1.TabIndex = 28;
-            this.label1.Text = "N1";
+            this.lblN.AutoSize = true;
+            this.lblN.Location = new System.Drawing.Point(14, 15);
+            this.lblN.Name = "lblN";
+            this.lblN.Size = new System.Drawing.Size(15, 13);
+            this.lblN.TabIndex = 28;
+            this.lblN.Text = "N";
             // 
             // btnDo
             // 
-            this.btnDo.Location = new System.Drawing.Point(39, 436);
+            this.btnDo.Location = new System.Drawing.Point(17, 471);
             this.btnDo.Name = "btnDo";
-            this.btnDo.Size = new System.Drawing.Size(75, 23);
+            this.btnDo.Size = new System.Drawing.Size(155, 23);
             this.btnDo.TabIndex = 27;
             this.btnDo.Text = "Go";
             this.btnDo.UseVisualStyleBackColor = true;
@@ -356,7 +382,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart.Series.Add(series1);
-            this.chart.Size = new System.Drawing.Size(656, 612);
+            this.chart.Size = new System.Drawing.Size(660, 610);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
             // 
@@ -367,7 +393,9 @@
             this.ClientSize = new System.Drawing.Size(850, 612);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Main";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -401,14 +429,14 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtL;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtT_end;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtN2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtN1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtN;
+        private System.Windows.Forms.Label lblN;
         private System.Windows.Forms.Button btnDo;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+        private System.Windows.Forms.TextBox txtK;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtM;
+        private System.Windows.Forms.Label label2;
 
     }
 }

@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Common
 {
     public class ViewEventArgs
     {
-        private List<object> parameters;
+        private readonly List<object> parameters;
+
+        public ViewEventArgs(object[] p)
+        {
+            parameters = new List<object>();
+            parameters.AddRange(p);
+        }
+
         public List<object> Parameters
         {
             get { return parameters; }
-        }
-        public ViewEventArgs(object[] p)
-        {
-            this.parameters = new List<object>();
-            this.parameters.AddRange(p);
-
         }
     }
 }

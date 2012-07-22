@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Windows.Forms;
 using Common;
 using Common.Mathematic;
-using ZedGraph;
 using Common.Task;
+using ZedGraph;
 
 namespace Core
 {
@@ -35,9 +33,10 @@ namespace Core
 
         void SendSolvingResultType2Mass(Dictionary<string, RKResults> results, IFunctionExecuter fe);
 
-        void ConfigGraphPane(ZedGraphControl zgc, System.Windows.Forms.Form f, PaneLayout pl, List<ChartInfo> chInfo);
+        void ConfigGraphPane(ZedGraphControl zgc, Form f, PaneLayout pl, List<ChartInfo> chInfo);
 
-        void UpdateAlgorithmParameters(string t0, string t1, string y0, string y00, string y01, string rkN, string randN, string z1min, string z1max, string z2min, string z2max);
+        void UpdateAlgorithmParameters(string t0, string t1, string y0, string y00, string y01, string rkN, string randN,
+                                       string z1min, string z1max, string z2min, string z2max);
 
         TaskCollection loadTaskCollection();
 

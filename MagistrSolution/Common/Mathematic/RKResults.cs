@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Common.Mathematic
 {
@@ -9,30 +8,30 @@ namespace Common.Mathematic
     {
         public double MaximumZ1()
         {
-            List<double> list = new List<double>();
-            this.ForEach(x => list.Add(x.Y[0]));
+            var list = new List<double>();
+            ForEach(x => list.Add(x.Y[0]));
             return list.Max();
         }
 
         public double MinimumZ1()
         {
-            List<double> list = new List<double>();
-            this.ForEach(x => list.Add(x.Y[0]));
+            var list = new List<double>();
+            ForEach(x => list.Add(x.Y[0]));
 
             return list.Min();
         }
 
         public double MaximumZ2()
         {
-            List<double> list = new List<double>();
-            this.ForEach(item => list.Add(item.Y[1]));
+            var list = new List<double>();
+            ForEach(item => list.Add(item.Y[1]));
             return list.Max();
         }
 
         public double MinimumZ2()
         {
-            List<double> list = new List<double>();
-            this.ForEach(item => list.Add(item.Y[1]));
+            var list = new List<double>();
+            ForEach(item => list.Add(item.Y[1]));
 
             return list.Min();
         }
@@ -48,11 +47,11 @@ namespace Common.Mathematic
             {
                 return this;
             }
-            if (this.Count > 1)
+            if (Count > 1)
             {
                 var res = new RKResults();
                 int i = step;
-                foreach (var r in this)
+                foreach (RKResult r in this)
                 {
                     if (i == step)
                     {
@@ -78,6 +77,5 @@ namespace Common.Mathematic
                 throw new ArgumentException();
             }
         }
-
     }
 }

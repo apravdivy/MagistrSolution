@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace Common
 {
@@ -12,9 +9,9 @@ namespace Common
     {
         public static string Serialize<T>(T obj)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+            var serializer = new DataContractJsonSerializer(obj.GetType());
             string retVal = null;
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 try
                 {
@@ -31,13 +28,13 @@ namespace Common
 
         public static T Deserialize<T>(string json)
         {
-            T obj = Activator.CreateInstance<T>();
-            using (MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            var obj = Activator.CreateInstance<T>();
+            using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
             {
                 try
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
-                    obj = (T)serializer.ReadObject(ms);
+                    var serializer = new DataContractJsonSerializer(obj.GetType());
+                    obj = (T) serializer.ReadObject(ms);
                 }
                 finally
                 {
@@ -47,5 +44,4 @@ namespace Common
             return obj;
         }
     }
-    
 }

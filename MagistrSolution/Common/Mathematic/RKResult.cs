@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Common.Mathematic
+﻿namespace Common.Mathematic
 {
     public sealed class RKResult
     {
-        public double X { get; private set; }
-        public Vector Y { get; private set; }
-
         public RKResult(double x, Vector y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
+
+        public double X { get; private set; }
+        public Vector Y { get; private set; }
 
         public override string ToString()
         {
             return string.Format("{0} {1}", X, Y);
         }
-
     }
 }

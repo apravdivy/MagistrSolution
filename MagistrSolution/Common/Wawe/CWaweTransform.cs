@@ -1,33 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common.Wawe
 {
-   
     public class CWaweTransform
     {
+        private List<double> Gn;
+        private List<double> Hn;
+
         /// <summary>
         /// количемтво эл-в в фильтре
         /// </summary>
-        int M;
-        
-        List<double> Hn=null;
-        List<double> Gn=null;
+        private int M;
 
         #region Коэфициенты Добеши
-        
-        List<double> Dob1 = new List<double>();
-        List<double> Dob2 = new List<double>();
-        List<double> Dob3 = new List<double>();
-        List<double> Dob4 = new List<double>();
-        List<double> Dob5 = new List<double>();
-        List<double> Dob6 = new List<double>();
-        List<double> Dob7 = new List<double>();
-        List<double> Dob8 = new List<double>();
-        List<double> Dob9 = new List<double>();
-        List<double> Dob10 = new List<double>();
+
+        private readonly List<double> Dob1 = new List<double>();
+        private readonly List<double> Dob10 = new List<double>();
+        private readonly List<double> Dob2 = new List<double>();
+        private readonly List<double> Dob3 = new List<double>();
+        private readonly List<double> Dob4 = new List<double>();
+        private readonly List<double> Dob5 = new List<double>();
+        private readonly List<double> Dob6 = new List<double>();
+        private readonly List<double> Dob7 = new List<double>();
+        private readonly List<double> Dob8 = new List<double>();
+        private readonly List<double> Dob9 = new List<double>();
 
         #endregion
 
@@ -37,19 +34,20 @@ namespace Common.Wawe
         public CWaweTransform()
         {
             #region SetKoefs
-            Dob1.Add(0.7071067811865475); 
+
+            Dob1.Add(0.7071067811865475);
             Dob1.Add(0.7071067811865475);
 
-            Dob2.Add(0.4829629131445341); 
-            Dob2.Add(0.8365163037378077); 
-            Dob2.Add(0.2241438680420134); 
+            Dob2.Add(0.4829629131445341);
+            Dob2.Add(0.8365163037378077);
+            Dob2.Add(0.2241438680420134);
             Dob2.Add(-0.1294095225512603);
 
-            Dob3.Add(0.3326705529500827); 
+            Dob3.Add(0.3326705529500827);
             Dob3.Add(0.8068915093110928);
-            Dob3.Add(0.4598775021184915); 
+            Dob3.Add(0.4598775021184915);
             Dob3.Add(-0.1350110200102546);
-            Dob3.Add(-0.0854412738820267); 
+            Dob3.Add(-0.0854412738820267);
             Dob3.Add(0.0352262918857096);
 
             Dob4.Add(0.2303778133074431);
@@ -116,7 +114,7 @@ namespace Common.Wawe
             Dob8.Add(-0.0003917403733770);
             Dob8.Add(0.0006754494064506);
             Dob8.Add(-0.0001174767841248);
-            
+
             Dob9.Add(0.0380779473638791);
             Dob9.Add(0.2438346746125939);
             Dob9.Add(0.6048231236901156);
@@ -157,7 +155,7 @@ namespace Common.Wawe
             Dob10.Add(0.0000935886703202);
             Dob10.Add(-0.0000132642028945);
 
-            #endregion 
+            #endregion
         }
 
         /// <summary>
@@ -198,12 +196,11 @@ namespace Common.Wawe
                 case 10:
                     Hn = Dob10;
                     break;
-
             }
-            this.M = Hn.Count;
+            M = Hn.Count;
             Gn = new List<double>();
             for (int n = 0; n < M; n++)
-                Gn.Add(Math.Pow(-1, n) * Hn[M - 1 - n]);
+                Gn.Add(Math.Pow(-1, n)*Hn[M - 1 - n]);
         }
 
         /// <summary>
@@ -213,49 +210,50 @@ namespace Common.Wawe
         /// <param name="J">Степень двойки длины сигнала</param>
         /// <param name="N">Порядок вейвлета</param>
         /// <returns>Разложение сигнала</returns>
-        public CDecomposition Decompose(List<double> Yn,int J,int N)
+        public CDecomposition Decompose(List<double> Yn, int J, int N)
         {
             InitFilter(N);
-            int L = (int)Math.Pow(2, J);
-            CDecomposition Decomp = new CDecomposition(J);
+            var L = (int) Math.Pow(2, J);
+            var Decomp = new CDecomposition(J);
             Decomp.SignalLength = Yn.Count;
             Decomp.WawletOrder = N;
             Decomp.J = J;
 
             int u;
-            double [][] B=new double[J+1][];
-            double [][] A = new double[J][];
+            var B = new double[J + 1][];
+            var A = new double[J][];
 
             B[J] = new double[L];
             for (int n = 0; n < L; n++)
-                B[J][n]=Math.Pow(L, -0.5)*Yn[n];
-            
+                B[J][n] = Math.Pow(L, -0.5)*Yn[n];
+
             for (int j = J; j > 0; j--)
             {
-                B[j-1] = new double[(int)Math.Pow(2, j - 1)];
-                A[j - 1] = new double[(int)Math.Pow(2, j - 1)];
+                B[j - 1] = new double[(int) Math.Pow(2, j - 1)];
+                A[j - 1] = new double[(int) Math.Pow(2, j - 1)];
 
-                for (int t = 0; t < Math.Pow(2, j-1); t++)
+                for (int t = 0; t < Math.Pow(2, j - 1); t++)
                 {
-                    u = 2 * t + 1;
-                    A[j-1][t] = Gn[0] * B[j][u];
-                    B[j-1][t] = Hn[0] * B[j][u];
+                    u = 2*t + 1;
+                    A[j - 1][t] = Gn[0]*B[j][u];
+                    B[j - 1][t] = Hn[0]*B[j][u];
                     for (int n = 1; n < M; n++)
                     {
                         u = u - 1;
                         if (u < 0)
-                            u = (int)Math.Pow(2, j)-1;
-                        A[j-1][t] += Gn[n] * B[j][u];
-                        B[j-1][t] += Hn[n] * B[j][u];
+                            u = (int) Math.Pow(2, j) - 1;
+                        A[j - 1][t] += Gn[n]*B[j][u];
+                        B[j - 1][t] += Hn[n]*B[j][u];
                     }
-                    Decomp.Details[j-1].Add(A[j-1][t]);
+                    Decomp.Details[j - 1].Add(A[j - 1][t]);
                 }
             }
             Decomp.Approx.Add(B[0][0]);
-            
+
 
             return Decomp;
         }
+
         /// <summary>
         /// Обратное дискретное вейвлет преобразование
         /// </summary>
@@ -263,20 +261,20 @@ namespace Common.Wawe
         /// <returns>Исходный сигнал</returns>
         public List<double> Reconstruct(CDecomposition Decomp)
         {
-            List<double> Y = new List<double>();
+            var Y = new List<double>();
             InitFilter(Decomp.WawletOrder);
             int l, m, u, i, k;
             int J = Decomp.J;
-            double [][] B=new double[J+1][];
-            double [][] A = new double[J][];
+            var B = new double[J + 1][];
+            var A = new double[J][];
             int L = Decomp.SignalLength;
 
             B[J] = new double[Decomp.SignalLength];
 
             for (int j = J; j > 0; j--)
             {
-                B[j - 1] = new double[(int)Math.Pow(2, j - 1)];
-                A[j - 1] = new double[(int)Math.Pow(2, j - 1)];
+                B[j - 1] = new double[(int) Math.Pow(2, j - 1)];
+                A[j - 1] = new double[(int) Math.Pow(2, j - 1)];
             }
 
             B[0][0] = Decomp.Approx[0];
@@ -293,29 +291,28 @@ namespace Common.Wawe
                     u = t;
                     i = 1;
                     k = 0;
-                    B[j][l] = Gn[i] * Decomp.Details[j - 1][u] + Hn[i] * B[j - 1][u];
-                    B[j][m] = Gn[k] * Decomp.Details[j - 1][u] + Hn[k] * B[j - 1][u];
+                    B[j][l] = Gn[i]*Decomp.Details[j - 1][u] + Hn[i]*B[j - 1][u];
+                    B[j][m] = Gn[k]*Decomp.Details[j - 1][u] + Hn[k]*B[j - 1][u];
                     if (M > 2)
                     {
-                        for (int n = 1; n < M / 2; n++)
+                        for (int n = 1; n < M/2; n++)
                         {
                             u = u + 1;
                             if (u >= Math.Pow(2, j - 1))
                                 u = 0;
                             i = i + 2;
                             k = k + 2;
-                            B[j][l] += Gn[i] * Decomp.Details[j - 1][u] + Hn[i] * B[j - 1][u];
-                            B[j][m] += Gn[k] * Decomp.Details[j - 1][u] + Hn[k] * B[j - 1][u];
+                            B[j][l] += Gn[i]*Decomp.Details[j - 1][u] + Hn[i]*B[j - 1][u];
+                            B[j][m] += Gn[k]*Decomp.Details[j - 1][u] + Hn[k]*B[j - 1][u];
                         }
                     }
-
-
                 }
             }
             for (int n = 0; n < B[J].Length; n++)
-                Y.Add(Math.Pow(L, 0.5) * B[J][n]);
+                Y.Add(Math.Pow(L, 0.5)*B[J][n]);
             return Y;
         }
+
         /// <summary>
         /// Разделение сигнала
         /// </summary>
@@ -325,7 +322,7 @@ namespace Common.Wawe
         /// <returns>Список разложений сигналов</returns>
         public List<CDecomposition> Divide(CDecomposition Decomp, int j1, int j2)
         {
-            List<CDecomposition> LDecomp = new List<CDecomposition>();
+            var LDecomp = new List<CDecomposition>();
             if (j2 == j1 + 2)
             {
                 CDecomposition d1, d2;
@@ -342,13 +339,13 @@ namespace Common.Wawe
                 d2.SignalLength = Decomp.SignalLength;
 
                 int z = j1 + 1; // level between j1 and j2
-                double []a=new double[(int)Math.Pow(2,z)];
-                double []b=new double[(int)Math.Pow(2,z)];
+                var a = new double[(int) Math.Pow(2, z)];
+                var b = new double[(int) Math.Pow(2, z)];
 
                 for (int n = 0; n < a.Length; n++)
                 {
-                    a[n] = Decomp.Details[z - 1][(int)n / 2] * Decomp.Details[z - 1][(int)n / 2];
-                    b[n] = (Decomp.Details[z + 1][2 * n] + Decomp.Details[z + 1][2 * n + 1]) / 2;
+                    a[n] = Decomp.Details[z - 1][n/2]*Decomp.Details[z - 1][n/2];
+                    b[n] = (Decomp.Details[z + 1][2*n] + Decomp.Details[z + 1][2*n + 1])/2;
                 }
 
                 d1.Approx.Add(Decomp.Approx[0]);
@@ -362,7 +359,7 @@ namespace Common.Wawe
                         {
                             if (j == z)
                             {
-                                d1.Details[j].Add((a[i] / (a[i] + b[i])) * Decomp.Details[j][i]);
+                                d1.Details[j].Add((a[i]/(a[i] + b[i]))*Decomp.Details[j][i]);
                             }
                             else
                                 d1.Details[j].Add(0);
@@ -376,7 +373,7 @@ namespace Common.Wawe
                         {
                             if (j == z)
                             {
-                                d2.Details[j].Add((b[i] / (a[i] + b[i])) * Decomp.Details[j][i]);
+                                d2.Details[j].Add((b[i]/(a[i] + b[i]))*Decomp.Details[j][i]);
                             }
                             else
                                 d2.Details[j].Add(Decomp.Details[j][i]);
@@ -428,60 +425,57 @@ namespace Common.Wawe
         {
             InitFilter(N);
             int J = 0;
-            if(Yn.Count%2!=0)
+            if (Yn.Count%2 != 0)
                 throw new Exception("Длина сигнала не является степенью двойки");
             for (int i = 1; i < 15; i++)
             {
-                J=i;
+                J = i;
                 if (Yn.Count == Math.Pow(2, J))
                     break;
             }
-            
-            int L = (int)Math.Pow(2, J);
-            
+
+            var L = (int) Math.Pow(2, J);
+
             int u;
-            double[][] B = new double[J + 1][];
-            double[][] A = new double[J][];
+            var B = new double[J + 1][];
+            var A = new double[J][];
 
             B[J] = new double[L];
             for (int n = 0; n < L; n++)
-                B[J][n] = Math.Pow(L, -0.5) * Yn[n];
+                B[J][n] = Math.Pow(L, -0.5)*Yn[n];
 
-            int resind=-1;
+            int resind = -1;
             for (int j = J; j > 0; j--)
             {
-                B[j - 1] = new double[(int)Math.Pow(2, j - 1)];
-                A[j - 1] = new double[(int)Math.Pow(2, j - 1)];
+                B[j - 1] = new double[(int) Math.Pow(2, j - 1)];
+                A[j - 1] = new double[(int) Math.Pow(2, j - 1)];
 
                 for (int t = 0; t < Math.Pow(2, j - 1); t++)
                 {
-                    u = 2 * t + 1;
-                    A[j - 1][t] = Gn[0] * B[j][u];
-                    B[j - 1][t] = Hn[0] * B[j][u];
+                    u = 2*t + 1;
+                    A[j - 1][t] = Gn[0]*B[j][u];
+                    B[j - 1][t] = Hn[0]*B[j][u];
                     for (int n = 1; n < M; n++)
                     {
                         u = u - 1;
                         if (u < 0)
-                            u = (int)Math.Pow(2, j) - 1;
-                        A[j - 1][t] += Gn[n] * B[j][u];
-                        B[j - 1][t] += Hn[n] * B[j][u];
+                            u = (int) Math.Pow(2, j) - 1;
+                        A[j - 1][t] += Gn[n]*B[j][u];
+                        B[j - 1][t] += Hn[n]*B[j][u];
                     }
                 }
                 K--;
                 if (K == 0)
                 {
-                    resind=j-1;
+                    resind = j - 1;
                     break;
                 }
             }
 
-            List<double> res = new List<double>();
+            var res = new List<double>();
             for (int i = 0; i < B[resind].Length; i++)
                 res.Add(B[resind][i]);
             return res;
-
- 
         }
-        
     }
 }
