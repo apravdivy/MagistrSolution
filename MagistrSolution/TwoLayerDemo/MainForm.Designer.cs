@@ -32,6 +32,9 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.txtDelta = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.txtM = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtK = new System.Windows.Forms.TextBox();
@@ -60,7 +63,6 @@
             this.lblN = new System.Windows.Forms.Label();
             this.btnDo = new System.Windows.Forms.Button();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -78,6 +80,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.txtDelta);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.button1);
             this.splitContainer1.Panel1.Controls.Add(this.txtM);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
@@ -113,6 +117,35 @@
             this.splitContainer1.Size = new System.Drawing.Size(850, 612);
             this.splitContainer1.SplitterDistance = 184;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // txtDelta
+            // 
+            this.txtDelta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDelta.Location = new System.Drawing.Point(72, 472);
+            this.txtDelta.Name = "txtDelta";
+            this.txtDelta.Size = new System.Drawing.Size(100, 20);
+            this.txtDelta.TabIndex = 60;
+            this.txtDelta.Text = "0,001";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(14, 475);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(30, 13);
+            this.label3.TabIndex = 59;
+            this.label3.Text = "delta";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(17, 560);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(155, 23);
+            this.button1.TabIndex = 58;
+            this.button1.Text = "test";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // txtM
             // 
@@ -350,7 +383,7 @@
             this.txtN.Name = "txtN";
             this.txtN.Size = new System.Drawing.Size(100, 20);
             this.txtN.TabIndex = 29;
-            this.txtN.Text = "100";
+            this.txtN.Text = "256";
             // 
             // lblN
             // 
@@ -363,7 +396,7 @@
             // 
             // btnDo
             // 
-            this.btnDo.Location = new System.Drawing.Point(17, 471);
+            this.btnDo.Location = new System.Drawing.Point(17, 522);
             this.btnDo.Name = "btnDo";
             this.btnDo.Size = new System.Drawing.Size(155, 23);
             this.btnDo.TabIndex = 27;
@@ -387,16 +420,6 @@
             this.chart.Size = new System.Drawing.Size(660, 610);
             this.chart.TabIndex = 0;
             this.chart.Text = "chart1";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 538);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(155, 23);
-            this.button1.TabIndex = 58;
-            this.button1.Text = "test";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
@@ -450,6 +473,8 @@
         private System.Windows.Forms.TextBox txtM;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtDelta;
+        private System.Windows.Forms.Label label3;
 
     }
 }
