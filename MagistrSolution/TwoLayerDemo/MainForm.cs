@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Common.Mathematic;
 using System.Globalization;
+using TwoLayerDemo.Properties;
 
 namespace TwoLayerDemo
 {
@@ -40,14 +43,29 @@ namespace TwoLayerDemo
         {
             try
             {
-                GetValuesFromForm();
+                var cs = new CancellationTokenSource();
+                var t = new Task<double>(() =>
+                {
+                    GetValuesFromForm();
+                    _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount,
+                                              _sensorsCount,
+                                              true);
+                    double result = Solver.SolveMin(0, _l, TargetFunctional, 0.0001);
+                    return result;
+                }, cs.Token);
 
-                _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount,
-                                          _sensorsCount,
-                                          true);
+                t.ContinueWith(task =>
+                {
+                    MessageBox.Show(task.Result.ToString("f3"));
+                }, cs.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
 
-                double result = Solver.SolveMin(0, _l, TargetFunctional, 0.0001);
-                MessageBox.Show(result.ToString("f3"));
+                t.ContinueWith(task =>
+                {
+                    MessageBox.Show(Resources.ErrorString);
+                }, cs.Token, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.FromCurrentSynchronizationContext());
+
+                t.Start(TaskScheduler.FromCurrentSynchronizationContext());
+
             }
             catch (Exception exc)
             {
@@ -135,13 +153,16 @@ namespace TwoLayerDemo
             var sensorsResults = new Dictionary<double, List<double>>();
 
             int i = 0;
-
+            Random r = new Random();
             for (int t = 1; t <= 600; t += 10)
             {
                 double[] T = Solver.SolveTwoLayer(n1, n2, t, l, lambda1, ro1, c1, lambda2, ro2, c2, tl, t0, tr, h);
+
                 for (int index = 0; index < T.Length; index++)
                 {
-                    T[index] += _delta;
+                    var dd = r.NextDouble() > 0.5 ? r.NextDouble() * _delta : -r.NextDouble() * _delta;
+                    System.Diagnostics.Debug.WriteLine(d);
+                    T[index] += dd;
                 }
                 if (isDraw)
                 {
@@ -204,24 +225,90 @@ namespace TwoLayerDemo
 
         private void RAlgFunction(ref double f, ref double[] x, ref double[] g)
         {
+            int a = 1000000;
             f = TargetFunctional(x[0], x[1], x[2]);
+            var prevF = f;
 
-            double delta = 0.1;
+            //---------- Штрафы -------------
+            if (x[0] < 0)
+            {
+                f += a * x[0] * x[0];
+            }
+            if (x[0] > _l)
+            {
+                f += a * (x[0] - _l) * (x[0] - _l);
+            }
+            double delta = 0.001;
 
-            g[0] = (TargetFunctional(x[0] + 0.001, x[1], x[2]) - f) / delta;
-            g[1] = (TargetFunctional(x[0], x[1] + 1, x[2]) - f) / delta;
-            g[2] = (TargetFunctional(x[0], x[1], x[2] + 1) - f) / delta;
+            g[0] = (TargetFunctional(x[0] + delta, x[1], x[2]) - prevF) / delta;
+            g[1] = (TargetFunctional(x[0], x[1] + 1, x[2]) - prevF);
+            g[2] = (TargetFunctional(x[0], x[1], x[2] + 1) - prevF);
+
+            if (x[0] < 0)
+            {
+                g[0] += 2 * a * x[0];
+            }
+            if (x[0] > _l)
+            {
+                g[0] += 2 * a * (x[0] - _l);
+            }
         }
 
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetValuesFromForm();
 
-            var ra = new RAlgSolver();
-            ra.FUNCT = RAlgFunction;
+            var cs = new CancellationTokenSource();
+            var t = new Task<RAlgSolver>(() =>
+            {
+                GetValuesFromForm();
+                _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount,
+                                              _sensorsCount,
+                                              true);
+
+                var ra = new RAlgSolver();
+                ra.FUNCT = RAlgFunction;
+                ra.R_Algorithm();
+                return ra;
+            }, cs.Token);
+
+            t.ContinueWith(task =>
+            {
+                MessageBox.Show(string.Format("{0} {1} {2}", task.Result.x[0], task.Result.x[1], task.Result.x[2]));
+            }, cs.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
+
+            t.ContinueWith(task =>
+            {
+                MessageBox.Show(Resources.ErrorString);
+            }, cs.Token, TaskContinuationOptions.OnlyOnFaulted, TaskScheduler.FromCurrentSynchronizationContext());
+
+            t.Start(TaskScheduler.FromCurrentSynchronizationContext());
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var ra = new RAlgSolver(2);
+            ra.FUNCT = testFunction;
             ra.R_Algorithm();
-            MessageBox.Show(string.Format("{0} {1} {2}", ra.x[0], ra.x[1], ra.x[2], CultureInfo.InvariantCulture));
+            MessageBox.Show(string.Format("x1: {0:f3} x2: {1:f3}", ra.x[0], ra.x[1]));
+
+        }
+
+        private void testFunction(ref double f_1, ref double[] x_1, ref double[] g_1)
+        {
+            int a = 10000000;
+            f_1 = x_1[0] * x_1[0] + x_1[1] * x_1[1];
+
+            if (x_1[0] < 1)
+            {
+                f_1 += a * (1 - x_1[0]) * (1 - x_1[0]);
+            }
+
+            g_1[0] = 2 * x_1[0];
+            g_1[1] = 2 * x_1[1];
+
+            if (x_1[0] < 1) g_1[0] += -2 * a * (1 - x_1[0]);
         }
     }
 }

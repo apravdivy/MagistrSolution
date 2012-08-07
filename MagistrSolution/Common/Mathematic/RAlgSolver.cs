@@ -54,6 +54,16 @@ namespace Common.Mathematic
             x[2] = 300;
         }
 
+        public RAlgSolver(int count)
+        {
+            c = count;
+            Random r = new Random();
+            for (int i = 0; i < count; i++)
+            {
+                x[i] = r.NextDouble();    
+            }
+        }
+
         private RAlgSolver(TaskWorker tw, RKResults res, List<List<double>> startParameters)
         {
             this.tw = tw;
