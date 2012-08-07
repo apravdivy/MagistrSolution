@@ -161,7 +161,7 @@ namespace TwoLayerDemo
                 for (int index = 0; index < T.Length; index++)
                 {
                     var dd = r.NextDouble() > 0.5 ? r.NextDouble() * _delta : -r.NextDouble() * _delta;
-                    System.Diagnostics.Debug.WriteLine(d);
+                    //System.Diagnostics.Debug.WriteLine(dd);
                     T[index] += dd;
                 }
                 if (isDraw)
