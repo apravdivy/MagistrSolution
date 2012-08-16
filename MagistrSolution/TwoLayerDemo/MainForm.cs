@@ -138,7 +138,7 @@ namespace TwoLayerDemo
                                                           double l, double k, int nodesCount, int sensorsCount,
                                                           bool isDraw)
         {
-            Debug.Assert(k > 0 && k < l);
+            Debug.Assert(k >= 0 && k <= l);
             var n1 = (int)(k * nodesCount / l);
             int n2 = nodesCount - n1;
             Debug.Assert(n2 >= 0);
@@ -153,7 +153,7 @@ namespace TwoLayerDemo
             var sensorsResults = new Dictionary<double, List<double>>();
 
             int i = 0;
-            Random r = new Random();
+            var r = new Random();
             for (int t = 1; t <= 600; t += 10)
             {
                 double[] T = Solver.SolveTwoLayer(n1, n2, t, l, lambda1, ro1, c1, lambda2, ro2, c2, tl, t0, tr, h);
@@ -225,33 +225,42 @@ namespace TwoLayerDemo
 
         private void RAlgFunction(ref double f, ref double[] x, ref double[] g)
         {
-            int a = 1000000;
+            if (x[0] < 0)
+            {
+                x[0] = 0.01;
+            }
+            if (x[0] > _l)
+            {
+                x[0] = _l - 0.01;
+            }
+
+            //int a = 1000000;
             f = TargetFunctional(x[0], x[1], x[2]);
-            var prevF = f;
+            //var prevF = f;
 
             //---------- Штрафы -------------
-            if (x[0] < 0)
-            {
-                f += a * x[0] * x[0];
-            }
-            if (x[0] > _l)
-            {
-                f += a * (x[0] - _l) * (x[0] - _l);
-            }
-            double delta = 0.001;
+            //if (x[0] < 0)
+            //{
+            //    f += a * x[0] * x[0];
+            //}
+            //if (x[0] > _l)
+            //{
+            //    f += a * (x[0] - _l) * (x[0] - _l);
+            //}
+            const double delta = 0.001;
 
-            g[0] = (TargetFunctional(x[0] + delta, x[1], x[2]) - prevF) / delta;
-            g[1] = (TargetFunctional(x[0], x[1] + 1, x[2]) - prevF);
-            g[2] = (TargetFunctional(x[0], x[1], x[2] + 1) - prevF);
+            g[0] = (TargetFunctional(x[0] + delta, x[1], x[2]) - f) / delta;
+            g[1] = (TargetFunctional(x[0], x[1] + 1, x[2]) - f);
+            g[2] = (TargetFunctional(x[0], x[1], x[2] + 1) - f);
 
-            if (x[0] < 0)
-            {
-                g[0] += 2 * a * x[0];
-            }
-            if (x[0] > _l)
-            {
-                g[0] += 2 * a * (x[0] - _l);
-            }
+            //if (x[0] < 0)
+            //{
+            //    g[0] += 2 * a * x[0];
+            //}
+            //if (x[0] > _l)
+            //{
+            //    g[0] += 2 * a * (x[0] - _l);
+            //}
         }
 
 
