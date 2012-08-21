@@ -34,9 +34,14 @@ namespace TwoLayerDemo
         private double _tr;
         private double _delta;
 
+        private double _Tmax;
+        private int _Tdelta;
+
         public MainForm()
         {
             InitializeComponent();
+            chart1.Series.Clear();
+            chart2.Series.Clear();
         }
 
         private void btnDo_Click(object sender, EventArgs e)
@@ -44,19 +49,19 @@ namespace TwoLayerDemo
             try
             {
                 var cs = new CancellationTokenSource();
-                var t = new Task<double>(() =>
+                var t = new Task<Tuple<double, double>>(() =>
                 {
+                    chart1.Series.Clear();
+                    chart2.Series.Clear();
                     GetValuesFromForm();
-                    _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount,
-                                              _sensorsCount,
-                                              true);
-                    double result = Solver.SolveMin(0, _l, TargetFunctional, 0.0001);
-                    return result;
+                    _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount, _sensorsCount, true, true, chart1);
+                    var res = Solver.SolveMin(0, _l, TargetFunctional, 0.0001);
+                    return res;
                 }, cs.Token);
 
                 t.ContinueWith(task =>
                 {
-                    MessageBox.Show(task.Result.ToString("f3"));
+                    richTextBox1.Text += string.Format("\tk={0:f3} f={1:f4}\r\n", task.Result.Item1, task.Result.Item2);
                 }, cs.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
 
                 t.ContinueWith(task =>
@@ -75,8 +80,6 @@ namespace TwoLayerDemo
 
         private void GetValuesFromForm()
         {
-            chart.Series.Clear();
-
             _k = Convert.ToDouble(txtK.Text);
             _l = Convert.ToDouble(txtL.Text);
 
@@ -95,31 +98,27 @@ namespace TwoLayerDemo
             _t0 = Convert.ToDouble(txtT0.Text);
             _delta = Convert.ToDouble(txtDelta.Text, CultureInfo.CurrentUICulture);
             _sensorsCount = Convert.ToInt32(txtM.Text);
+
+            _Tmax = Convert.ToDouble(txtTMax.Text);
+            _Tdelta = Convert.ToInt32(txtTdelta.Text);
         }
 
         private double TargetFunctional(double ksi)
         {
-            Dictionary<double, List<double>> calaculatedSensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2,
-                                                                                  _tl,
-                                                                                  _t0, _tr, _l, ksi, _nodesCount,
-                                                                                  _sensorsCount, false);
+            Dictionary<double, List<double>> calaculatedSensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, ksi, _nodesCount, _sensorsCount, false, false, chart1);
             return Diff(calaculatedSensorsResults, _sensorsResults);
         }
 
         private double TargetFunctional(double ksi, double l1, double l2)
         {
-            Dictionary<double, List<double>> calaculatedSensorsResults = GetValue(l1, _ro1, _c1, l2, _ro2, _c2, _tl,
-                                                                                  _t0, _tr, _l, ksi, _nodesCount,
-                                                                                  _sensorsCount, false);
+            Dictionary<double, List<double>> calaculatedSensorsResults = GetValue(l1, _ro1, _c1, l2, _ro2, _c2, _tl, _t0, _tr, _l, ksi, _nodesCount, _sensorsCount, false, false, chart1);
             return Diff(calaculatedSensorsResults, _sensorsResults);
         }
 
         private double Diff(Dictionary<double, List<double>> calaculatedSensorsResults,
                             Dictionary<double, List<double>> sensorsRes)
         {
-            double res =
-                sensorsRes.Sum(
-                    sensorsResult => ListDiff(sensorsResult.Value, calaculatedSensorsResults[sensorsResult.Key]));
+            double res = sensorsRes.Sum(sensorsResult => ListDiff(sensorsResult.Value, calaculatedSensorsResults[sensorsResult.Key]));
             return res / 2.0;
         }
 
@@ -133,10 +132,7 @@ namespace TwoLayerDemo
             return r;
         }
 
-        private Dictionary<double, List<double>> GetValue(double lambda1, double ro1, double c1, double lambda2,
-                                                          double ro2, double c2, double tl, double t0, double tr,
-                                                          double l, double k, int nodesCount, int sensorsCount,
-                                                          bool isDraw)
+        private Dictionary<double, List<double>> GetValue(double lambda1, double ro1, double c1, double lambda2, double ro2, double c2, double tl, double t0, double tr, double l, double k, int nodesCount, int sensorsCount, bool isDraw, bool isAddNoise, Chart chart)
         {
             Debug.Assert(k >= 0 && k <= l);
             var n1 = (int)(k * nodesCount / l);
@@ -154,20 +150,23 @@ namespace TwoLayerDemo
 
             int i = 0;
             var r = new Random();
-            for (int t = 1; t <= 600; t += 10)
+            for (int t = 1; t <= _Tmax; t += _Tdelta)
             {
-                double[] T = Solver.SolveTwoLayer(n1, n2, t, l, lambda1, ro1, c1, lambda2, ro2, c2, tl, t0, tr, h);
-
-                for (int index = 0; index < T.Length; index++)
+                double[] T = Solver.SolveTwoLayer(n1, n2, t, lambda1, ro1, c1, lambda2, ro2, c2, tl, t0, tr, h);
+                if (isAddNoise)
                 {
-                    var dd = r.NextDouble() > 0.5 ? r.NextDouble() * _delta : -r.NextDouble() * _delta;
-                    //System.Diagnostics.Debug.WriteLine(dd);
-                    T[index] += dd;
+                    for (int index = 0; index < T.Length; index++)
+                    {
+                        var dd = r.NextDouble() > 0.5 ? r.NextDouble() * _delta : -r.NextDouble() * _delta;
+                        //System.Diagnostics.Debug.WriteLine(dd);
+                        T[index] += dd;
+                    }
                 }
                 if (isDraw)
                 {
-                    AddSeries(i, h, t, T);
+                    AddSeries(i, h, t, T, chart);
                 }
+                Application.DoEvents();
                 int currentPos = 0;
                 for (int z = 0; z < T.Length; z++)
                 {
@@ -197,7 +196,8 @@ namespace TwoLayerDemo
                                     ChartType = SeriesChartType.Line,
                                     BorderWidth = 3,
                                     BorderDashStyle = ChartDashStyle.Dash,
-                                    BorderColor = Color.Black
+                                    BorderColor = Color.Black,
+                                    IsVisibleInLegend = false
                                 };
                     foreach (double y in p.Value)
                     {
@@ -210,10 +210,11 @@ namespace TwoLayerDemo
             return sensorsResults;
         }
 
-        private void AddSeries(int i, double h, int t, double[] T)
+        private void AddSeries(int i, double h, int t, double[] T, Chart chart)
         {
             chart.Series.Add(string.Format("Result_{0}", t));
             chart.Series[i].ChartType = SeriesChartType.Line;
+            chart.Series[i].IsVisibleInLegend = false;
 
             double x = 0;
             foreach (double t1 in T)
@@ -264,16 +265,15 @@ namespace TwoLayerDemo
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnRalgirithmClick(object sender, EventArgs e)
         {
 
             var cs = new CancellationTokenSource();
             var t = new Task<RAlgSolver>(() =>
             {
+                chart1.Series.Clear();
                 GetValuesFromForm();
-                _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount,
-                                              _sensorsCount,
-                                              true);
+                _sensorsResults = GetValue(_lambda1, _ro1, _c1, _lambda2, _ro2, _c2, _tl, _t0, _tr, _l, _k, _nodesCount, _sensorsCount, true, true, chart1);
 
                 var ra = new RAlgSolver();
                 ra.FUNCT = RAlgFunction;
@@ -283,7 +283,14 @@ namespace TwoLayerDemo
 
             t.ContinueWith(task =>
             {
-                MessageBox.Show(string.Format("{0} {1} {2}", task.Result.x[0], task.Result.x[1], task.Result.x[2]));
+                richTextBox1.Text += string.Format("\tk={0:f3} lambda1={1:f3} lambda2={2:f3} f={3:f4}\r\n", task.Result.x[0], task.Result.x[1], task.Result.x[2], task.Result.f, chart1);
+
+                //if (MessageBox.Show("Do you want to draw result?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    chart2.Series.Clear();
+                    _sensorsResults = GetValue(task.Result.x[1], _ro1, _c1, task.Result.x[2], _ro2, _c2, _tl, _t0, _tr, _l, task.Result.x[0], _nodesCount, _sensorsCount, true, false, chart2);
+                }
+
             }, cs.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
 
             t.ContinueWith(task =>
